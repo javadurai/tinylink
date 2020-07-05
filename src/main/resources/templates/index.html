@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <title>Go URL Shortner</title>
+</head>
+<body>
+<div class="container">
+    <div id="navbar">
+        <ul>
+            <li><a href="/">Search</a></li>
+            <li><a href="/manage-url">Add New</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">About</a></li>
+        </ul>
+    </div>
+    <div class="new-url-add">
+        <form action="/" th:action="@{/}" id="form" th:object="${search}" class="form" method="post">
+            <h2>Search Short URL(s)</h2>
+            <div class="form-control">
+                <label for="full_url">Full URL</label>
+                <input type="text" id="full_url" name="fullUrl" placeholder="Enter Full URL" />
+                <small>Error message</small>
+            </div>
+            <div class="form-control">
+                <label for="short_url">Short URL</label>
+                <input type="text" id="short_url" name="shortUrl" placeholder="Enter Short URL" />
+                <small>Error message</small>
+            </div>
+            <button type="submit">Search</button>
+        </form>
+    </div>
+
+    <div class="list-urls">
+        <table>
+            <tr>
+                <th>Short URL</th>
+                <th>Full URL</th>
+                <th>Date Added</th>
+                <th></th>
+            </tr>
+            <tr th:each="url : ${list}">
+                <td th:text="${url.shortUrl}"/>
+                <td th:text="${url.fullUrl}"/>
+                <td th:text="${url.dateAdded}"/>
+                <td><a th:href="@{/manage-url/{id}(id=${url.id})}">Edit</a> <a th:href="@{/manage-url/remove/{id}(id=${url.id})}">Remove</a></td>
+            </tr>
+        </table>
+    </div>
+</div>
+</body>
+</html>
