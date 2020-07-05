@@ -1,6 +1,7 @@
 package com.github.jabadurai.go.urlshortner.entities;
 
 import javax.persistence.*;
+import javax.validation.Constraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -12,12 +13,12 @@ public class UrlData {
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Please enter Full URL")
-    @Size(min = 4, message = "Full URL must at least have 4 characters")
+    @NotNull(message = "{full_url.not_null}")
+    @Size(min = 4, message = "{full_url.size.limit}")
     private String fullUrl;
 
-    @NotNull(message = "Please enter Short URL")
-    @Size(min = 4, max = 50, message = "Short URL must be between 4 and 50 characters")
+    @NotNull(message = "{short_url.not_null}")
+    @Size(min = 4, max = 50, message = "{short_url.size.limit}")
     private String shortUrl;
 
     @Column(updatable = false)

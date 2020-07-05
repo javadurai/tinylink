@@ -36,7 +36,7 @@
     </div>
 
     <div class="list-urls">
-        <table class="bordered">
+        <table class="bordered" id="short-url-data">
             <tr>
                 <th>Short URL</th>
                 <th>Full URL</th>
@@ -44,12 +44,12 @@
                 <th></th>
             </tr>
             <tr th:each="url : ${list}">
-                <td><a target="_blank" th:text="${url.shortUrl}" th:href="@{/go/{shortUrl}(shortUrl=${url.shortUrl})}"/></td>
+                <td><a target="_blank" class="teal-text" th:text="${url.shortUrl}" th:href="@{/go/{shortUrl}(shortUrl=${url.shortUrl})}"/></td>
                 <td th:text="${url.fullUrl}"/>
-                <td th:text="${url.dateAdded}"/>
+                <td th:text="${#dates.format(url.dateAdded, 'dd-MMM-yyyy HH:mm')}"/>
                 <td>
-                    <a th:href="@{/manage-url/{id}(id=${url.id})}"><i class="material-icons">edit</i></a>
-                    <a th:href="@{/manage-url/remove/{id}(id=${url.id})}"><i class="material-icons">delete</i></a>
+                    <a th:href="@{/manage-url/{id}(id=${url.id})}"><i class="material-icons teal-text">edit</i></a>
+                    <a th:href="@{/manage-url/remove/{id}(id=${url.id})}"><i class="material-icons teal-text">delete</i></a>
                 </td>
             </tr>
         </table>

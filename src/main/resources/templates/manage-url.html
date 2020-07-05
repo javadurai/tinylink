@@ -20,13 +20,13 @@
                         <div class="form-control" th:classappend="${#fields.hasErrors('fullUrl') ? 'error': 'success'}">
                             <label for="full_url">Full URL</label>
                             <input type="text" id="full_url" th:field="*{fullUrl}" placeholder="Enter Full URL" />
-                            <small th:if="${#fields.hasErrors('fullUrl')}" th:errors="*{fullUrl}"/>
+                            <small class="error" th:if="${#fields.hasErrors('fullUrl')}" th:errors="*{fullUrl}"/>
                         </div>
                         <input type="hidden" name="id" th:field="*{id}"/>
                         <div class="form-control" th:classappend="${#fields.hasErrors('shortUrl') ? 'error': 'success'}">
                             <label for="short_url">Short URL</label>
                             <input type="text" id="short_url" th:field="*{shortUrl}" placeholder="Enter Short URL" />
-                            <small th:if="${#fields.hasErrors('shortUrl')}" th:errors="*{shortUrl}"/>
+                            <small class="error" th:if="${#fields.hasErrors('shortUrl')}" th:errors="*{shortUrl}"/>
                         </div>
                         <button class="btn waves-effect waves-light" type="submit" name="action">Save URL</button>
                     </form>

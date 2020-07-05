@@ -4,9 +4,11 @@ import com.github.jabadurai.go.urlshortner.entities.UrlData;
 import com.github.jabadurai.go.urlshortner.repositories.UrlDataRepository;
 import com.github.jabadurai.go.urlshortner.utils.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -75,6 +77,16 @@ public class UrlDataController {
             model.addAttribute("urlData", urlData);
             return "manage-url";
         } else {
+            // validate unique short_url
+            if(urlData.getId() == null){
+                List<UrlData> getData = urlDataRepository.findByShortUrl(urlData.getShortUrl());
+                if(getData != null && getData.size() > 0){
+                    validator.addError(new FieldError(UrlData.class.getName(), "shortUrl", "Short URL '"+ urlData.getShortUrl() + "' already exist in system. please choose a different text"));
+                    model.addAttribute("urlData", urlData);
+                    return "manage-url";
+                }
+            }
+
             urlDataRepository.save(urlData);
             return "redirect:/";
         }
