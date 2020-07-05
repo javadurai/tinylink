@@ -1,9 +1,6 @@
 package com.github.jabadurai.go.urlshortner.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.util.Date;
@@ -23,6 +20,7 @@ public class UrlData {
     @Size(min = 4, max = 50, message = "Short URL must be between 4 and 50 characters")
     private String shortUrl;
 
+    @Column(updatable = false)
     private Date dateAdded;
 
     public UrlData(){
