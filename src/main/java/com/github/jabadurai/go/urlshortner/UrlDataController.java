@@ -91,14 +91,8 @@ public class UrlDataController {
             model.addAttribute("urlData", urlData);
             return "manage-url";
         } else {
-            // preserve DateAdded
-            if(urlData.getId() == null){
-                urlData.setDateAdded(new Date());
-            } else {
-                urlData.setDateAdded(urlDataRepository.findById(urlData.getId()).get().getDateAdded());
-            }
             urlDataRepository.save(urlData);
-            return "index";
+            return "redirect:/";
         }
     }
 
