@@ -16,6 +16,7 @@ public class UrlData {
     private Long id;
 
     @NotNull(message = "Please enter Full URL")
+    @Size(min = 4, message = "Full URL must at least have 4 characters")
     private String fullUrl;
 
     @NotNull(message = "Please enter Short URL")
