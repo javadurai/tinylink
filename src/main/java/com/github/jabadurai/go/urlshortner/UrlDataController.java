@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import javax.validation.Valid;
@@ -69,20 +67,6 @@ public class UrlDataController {
         model.addAttribute("list", urlDataRepository.findAll());
         model.addAttribute("search", new UrlData());
         return "index";
-    }
-
-    private List<String> validateData(UrlData urlData){
-        List<String> errors = new ArrayList<String>();
-        if(StringUtils.isEmpty(urlData.getShortUrl())){
-            errors.add("Please enter Short URL");
-        } else if(urlData.getShortUrl().length() > 50 || urlData.getShortUrl().length() < 4){
-            errors.add("Short URL must be between 4 and 50 characters");
-        }
-        if(StringUtils.isEmpty(urlData.getFullUrl())){
-            errors.add("Please enter Full URL");
-        }
-
-        return errors;
     }
 
     @PostMapping("/manage-url")

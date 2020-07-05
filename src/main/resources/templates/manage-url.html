@@ -3,36 +3,40 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="/css/style.css" />
+    <link rel="stylesheet" href="/css/materialize.min.css" />
     <title>Go URL Shortner</title>
 </head>
 <body>
 <div class="container">
-    <div id="navbar">
-        <ul>
-            <li><a href="/">Search</a></li>
-            <li><a href="/manage-url">Add New</a></li>
-            <li><a href="#">Contact</a></li>
-            <li><a href="#">About</a></li>
-        </ul>
-    </div>
+    <div th:insert="~{fragments/general :: navbar}"></div>
     <div class="new-url-add">
-        <form action="/" th:action="@{/manage-url}" id="form" th:object="${urlData}" class="form" method="post">
-            <h2 th:text="${id} ? 'Edit URL' : 'Add New URL'"/>
-            <div class="form-control" th:classappend="${#fields.hasErrors('fullUrl') ? 'error': 'success'}">
-                <label for="full_url">Full URL</label>
-                <input type="text" id="full_url" th:field="*{fullUrl}" placeholder="Enter Full URL" />
-                <small th:if="${#fields.hasErrors('fullUrl')}" th:errors="*{fullUrl}"/>
+        <div class="card horizontal">
+            <div class="card-stacked">
+                <div class="card-content">
+                    <form action="/" th:action="@{/manage-url}" id="form" th:object="${urlData}" class="form" method="post">
+                        <h5 th:text="${id} ? 'Edit URL' : 'Add New URL'"/>
+                        <div class="form-control" th:classappend="${#fields.hasErrors('fullUrl') ? 'error': 'success'}">
+                            <label for="full_url">Full URL</label>
+                            <input type="text" id="full_url" th:field="*{fullUrl}" placeholder="Enter Full URL" />
+                            <small th:if="${#fields.hasErrors('fullUrl')}" th:errors="*{fullUrl}"/>
+                        </div>
+                        <input type="hidden" name="id" th:field="*{id}"/>
+                        <div class="form-control" th:classappend="${#fields.hasErrors('shortUrl') ? 'error': 'success'}">
+                            <label for="short_url">Short URL</label>
+                            <input type="text" id="short_url" th:field="*{shortUrl}" placeholder="Enter Short URL" />
+                            <small th:if="${#fields.hasErrors('shortUrl')}" th:errors="*{shortUrl}"/>
+                        </div>
+                        <button class="btn waves-effect waves-light" type="submit" name="action">Save URL</button>
+                    </form>
+                </div>
             </div>
-            <input type="hidden" name="id" th:field="*{id}"/>
-            <div class="form-control" th:classappend="${#fields.hasErrors('shortUrl') ? 'error': 'success'}">
-                <label for="short_url">Short URL</label>
-                <input type="text" id="short_url" th:field="*{shortUrl}" placeholder="Enter Short URL" />
-                <small th:if="${#fields.hasErrors('shortUrl')}" th:errors="*{shortUrl}"/>
-            </div>
-            <button type="submit">Save URL</button>
-        </form>
+        </div>
     </div>
+    <div th:insert="~{fragments/general :: footer}"></div>
 </div>
+<script src="/js/jquery-3.2.1.min.js"></script>
+<script src="/js/materialize.min.js"></script>
 </body>
 </html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/css/materialize.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+    <title>Go URL Shortner</title>
+</head>
+<body>
+<div class="container">
+    <div th:fragment="navbar">
+
+        <nav>
+            <div class="nav-wrapper">
+               <!-- <a href="/" class="brand-logo center">Logo</a>-->
+                <ul class="left hide-on-med-and-down">
+                    <li><a href="/">Search</a></li>
+                    <li><a href="/manage-url">Add New</a></li>
+                    <li><a href="#">Contact</a></li>
+                    <li><a href="#">About</a></li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <footer th:fragment="footer" class="page-footer">
+        <div class="footer-copyright">
+            <div class="container">
+                © 2020 Copyright to <a class="white-text" href="mailto:jabadurai.com">Jabadurai</a>
+                <a class="grey-text text-lighten-4 right" href="#!">More Links</a>
+            </div>
+        </div>
+    </footer>
+</div>
+<script src="/js/materialize.min.js"></script>
+</body>
+</html>
