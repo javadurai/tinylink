@@ -19,18 +19,18 @@
     <div class="new-url-add">
         <form action="/" th:action="@{/manage-url}" id="form" th:object="${urlData}" class="form" method="post">
             <h2 th:text="${id} ? 'Edit URL' : 'Add New URL'"/>
-            <div class="form-control">
+            <div class="form-control" th:classappend="${#fields.hasErrors('fullUrl') ? 'error': 'success'}">
                 <label for="full_url">Full URL</label>
-                <input type="text" id="full_url" name="fullUrl" th:value="${urlData.fullUrl}" placeholder="Enter Full URL" />
-                <small th:if="${#fields.hasErrors('fullUrl')}" th:errors="*{fullUrl}">Error message</small>
+                <input type="text" id="full_url" th:field="*{fullUrl}" placeholder="Enter Full URL" />
+                <small th:if="${#fields.hasErrors('fullUrl')}" th:errors="*{fullUrl}"/>
             </div>
-            <input type="hidden" name="id" th:value="${urlData.id}"/>
-            <div class="form-control">
+            <input type="hidden" name="id" th:field="*{id}"/>
+            <div class="form-control" th:classappend="${#fields.hasErrors('shortUrl') ? 'error': 'success'}">
                 <label for="short_url">Short URL</label>
-                <input type="text" id="short_url" name="shortUrl" th:value="${urlData.shortUrl}" placeholder="Enter Short URL" />
-                <small th:if="${#fields.hasErrors('fullUrl')}" th:errors="*{fullUrl}">Error message</small>
+                <input type="text" id="short_url" th:field="*{shortUrl}" placeholder="Enter Short URL" />
+                <small th:if="${#fields.hasErrors('shortUrl')}" th:errors="*{shortUrl}"/>
             </div>
-            <button type="submit">Add Go URL</button>
+            <button type="submit">Save URL</button>
         </form>
     </div>
 </div>

@@ -86,13 +86,16 @@ public class UrlDataController {
     }
 
     @PostMapping("/manage-url")
-    public String save(@Valid UrlData urlData, BindingResult bindingResult, Model model){
-        if(bindingResult.hasErrors() || validateData(urlData).size() > 0){
+    public String save(@Valid UrlData urlData, BindingResult validator, Model model){
+        if(validator.hasErrors()){
             model.addAttribute("urlData", urlData);
             return "manage-url";
         } else {
+            // preserve DateAdded
             if(urlData.getId() == null){
                 urlData.setDateAdded(new Date());
+            } else {
+                urlData.setDateAdded(urlDataRepository.findById(urlData.getId()).get().getDateAdded());
             }
             urlDataRepository.save(urlData);
             return "index";
