@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -17,8 +18,16 @@
                 <ul class="left hide-on-med-and-down">
                     <li><a href="/">Search</a></li>
                     <li><a href="/manage-url">Add New</a></li>
-                    <li><a href="#">Contact</a></li>
-                    <li><a href="#">About</a></li>
+                    <!--<li><a href="#">Contact</a></li>
+                    <li><a href="#">About</a></li>-->
+                </ul>
+                <!--<span sec:authorize="isAuthenticated()">
+                    Logged user: <span sec:authentication="name"></span> |
+                    Roles: <span sec:authentication="principal.authorities"></span> |
+                    <a th:href="@{/logout}">Sign Out</a>
+                </span>-->
+                <ul class="right hide-on-med-and-down">
+                    <li><a href="/logout">Sign out</a></li>
                 </ul>
             </div>
         </nav>
@@ -31,6 +40,24 @@
             </div>
         </div>
     </footer>
+    <div th:fragment="alerts">
+        <div class="materialert info" th:text="${info}" th:if="${info}">
+            <div class="material-icons">info_outline</div>
+            Oh! What a beautiful alert :)
+        </div>
+        <div class="materialert error" th:text="${error}" th:if="${error}">
+            <div class="material-icons">error_outline</div>
+            Oh! What a beautiful alert :)
+        </div>
+        <div class="materialert success" th:text="${success}" th:if="${success}">
+            <div class="material-icons">check</div>
+            Oh! What a beautiful alert :)
+        </div>
+        <div class="materialert warning" th:text="${warning}" th:if="${warning}">
+            <div class="material-icons">warning</div>
+            Oh! What a beautiful alert :)
+        </div>
+    </div>
 </div>
 <script src="/js/materialize.min.js"></script>
 </body>
