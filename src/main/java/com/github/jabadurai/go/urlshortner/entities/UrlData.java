@@ -1,13 +1,16 @@
 package com.github.jabadurai.go.urlshortner.entities;
 
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
 import javax.persistence.*;
-import javax.validation.Constraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-public class UrlData {
+@EntityListeners(AuditingEntityListener.class)
+public class UrlData extends Auditable<String> implements Serializable {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
@@ -20,9 +23,6 @@ public class UrlData {
     @NotNull(message = "{short_url.not_null}")
     @Size(min = 4, max = 50, message = "{short_url.size.limit}")
     private String shortUrl;
-
-    @Column(updatable = false)
-    private Date dateAdded;
 
     public UrlData(){
 
@@ -57,21 +57,12 @@ public class UrlData {
         this.shortUrl = shortUrl;
     }
 
-    public Date getDateAdded() {
-        return dateAdded;
-    }
-
-    public void setDateAdded(Date dateAdded) {
-        this.dateAdded = dateAdded;
-    }
-
     @Override
     public String toString() {
         return "UrlData{" +
                 "id=" + id +
                 ", fullUrl='" + fullUrl + '\'' +
                 ", shortUrl='" + shortUrl + '\'' +
-                ", dateAdded=" + dateAdded +
                 '}';
     }
 }

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity4">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -11,6 +12,8 @@
 <body>
 <div class="container">
     <div th:insert="~{fragments/general :: navbar}"></div>
+    <div th:insert="~{fragments/general :: alerts}"></div>
+
     <div class="new-url-add">
         <div class="card horizontal">
             <div class="card-stacked">
@@ -40,13 +43,15 @@
             <tr>
                 <th>Short URL</th>
                 <th>Full URL</th>
-                <th>Date Added</th>
+                <th>Created Date</th>
+                <th>Created By</th>
                 <th></th>
             </tr>
             <tr th:each="url : ${list}">
                 <td><a target="_blank" class="teal-text" th:text="${url.shortUrl}" th:href="@{/go/{shortUrl}(shortUrl=${url.shortUrl})}"/></td>
                 <td th:text="${url.fullUrl}"/>
-                <td th:text="${#dates.format(url.dateAdded, 'dd-MMM-yyyy HH:mm')}"/>
+                <td th:text="${#dates.format(url.createdDate, 'dd-MMM-yyyy HH:mm')}"/>
+                <td th:text="${url.createdBy}"/>
                 <td>
                     <a th:href="@{/manage-url/{id}(id=${url.id})}"><i class="material-icons teal-text">edit</i></a>
                     <a th:href="@{/manage-url/remove/{id}(id=${url.id})}"><i class="material-icons teal-text">delete</i></a>

@@ -3,8 +3,9 @@ package com.github.jabadurai.go.urlshortner;
 import com.github.jabadurai.go.urlshortner.entities.UrlData;
 import com.github.jabadurai.go.urlshortner.repositories.UrlDataRepository;
 import com.github.jabadurai.go.urlshortner.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -21,6 +23,8 @@ import javax.validation.Valid;
 
 @Controller
 public class UrlDataController {
+
+    private final static Logger logger = LoggerFactory.getLogger(UrlDataController.class);
 
     @Autowired
     private UrlDataRepository urlDataRepository;
@@ -39,12 +43,13 @@ public class UrlDataController {
 
 
         model.addAttribute("list", all);
+        logger.info(all.toString());
         model.addAttribute("search", search != null ? search : new UrlData());
         return "index";
     }
 
     @GetMapping({"/manage-url", "/manage-url/{id}"})
-    public String addNew(@PathVariable(required = false) Long id, Model model){
+    public String manageUrl(@PathVariable(required = false) Long id, Model model){
         UrlData urlData = null;
         if(id != null ){
             Optional<UrlData> urlDataFetch = urlDataRepository.findById(id);
@@ -72,9 +77,10 @@ public class UrlDataController {
     }
 
     @PostMapping("/manage-url")
-    public String save(@Valid UrlData urlData, BindingResult validator, Model model){
+    public String save(@Valid UrlData urlData, BindingResult validator, Model model, RedirectAttributes redirAttrs){
         if(validator.hasErrors()){
             model.addAttribute("urlData", urlData);
+            redirAttrs.addFlashAttribute("error", "Sorry. Please fix the below errors !");
             return "manage-url";
         } else {
             // validate unique short_url
@@ -83,18 +89,26 @@ public class UrlDataController {
                 if(getData != null && getData.size() > 0){
                     validator.addError(new FieldError(UrlData.class.getName(), "shortUrl", "Short URL '"+ urlData.getShortUrl() + "' already exist in system. please choose a different text"));
                     model.addAttribute("urlData", urlData);
+                    redirAttrs.addFlashAttribute("error", "Sorry. Please fix the below errors !");
                     return "manage-url";
                 }
             }
 
             urlDataRepository.save(urlData);
+            redirAttrs.addFlashAttribute("success", "Everything went just fine with save!");
             return "redirect:/";
         }
     }
 
     @GetMapping("/manage-url/remove/{id}")
-    public String removeUrl(@PathVariable Long id){
+    public String removeUrl(@PathVariable Long id, RedirectAttributes redirAttrs){
         urlDataRepository.deleteById(id);
+        redirAttrs.addFlashAttribute("success", "Removed short url !");
         return "redirect:/";
+    }
+
+    @GetMapping("/login")
+    public String loginPage(){
+        return "login";
     }
 }
