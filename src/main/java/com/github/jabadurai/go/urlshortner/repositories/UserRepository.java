@@ -7,15 +7,15 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface UserRepository extends CrudRepository<User, Integer> {
 //    @Query("select u from User u where u.userid = ?1")
-    User findByUserid(String userid);
+    User findByUsername(String username);
 
-    @Modifying
-    @Query("update User u set u.password = ?1 where u.userid = ?2")
-    int updatePassword(String password, String userid);
-
-    @Modifying
-    @Query("update User u set u.email = ?1 where u.userid = ?2")
-    int updateEmail(String email, String userid);
+//    @Modifying
+//    @Query("update User u set u.password = ?1 where u.userid = ?2")
+//    int updatePassword(String password, String userid);
+//
+//    @Modifying
+//    @Query("update User u set u.email = ?1 where u.userid = ?2")
+//    int updateEmail(String email, String userid);
 }
