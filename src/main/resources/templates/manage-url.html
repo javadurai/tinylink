@@ -19,10 +19,10 @@
                 <div class="card-content">
                     <form action="/" th:action="@{/manage-url}" id="form" th:object="${urlData}" class="form" method="post">
                         <h5 th:text="${id} ? 'Edit URL' : 'Add New URL'"/>
-                        <div class="form-control" th:classappend="${#fields.hasErrors('fullUrl') ? 'error': 'success'}">
+                        <div class="form-control" th:classappend="${#fields.hasErrors('originalUrl') ? 'error': 'success'}">
                             <label for="full_url">Full URL</label>
-                            <input type="text" id="full_url" th:field="*{fullUrl}" placeholder="Enter Full URL" />
-                            <small class="error" th:if="${#fields.hasErrors('fullUrl')}" th:errors="*{fullUrl}"/>
+                            <input type="text" id="full_url" th:field="*{originalUrl}" placeholder="Enter Full URL" />
+                            <small class="error" th:if="${#fields.hasErrors('originalUrl')}" th:errors="*{originalUrl}"/>
                         </div>
                         <input type="hidden" name="id" th:field="*{id}"/>
                         <div class="form-control" th:classappend="${#fields.hasErrors('shortUrl') ? 'error': 'success'}">

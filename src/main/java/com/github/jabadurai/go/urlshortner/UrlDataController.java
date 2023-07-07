@@ -1,7 +1,7 @@
 package com.github.jabadurai.go.urlshortner;
 
-import com.github.jabadurai.go.urlshortner.entities.UrlData;
-import com.github.jabadurai.go.urlshortner.repositories.UrlDataRepository;
+import com.github.jabadurai.go.urlshortner.entities.Url;
+import com.github.jabadurai.go.urlshortner.repositories.UrlRepository;
 import com.github.jabadurai.go.urlshortner.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Optional;
-import javax.validation.Valid;
+import jakarta.validation.Valid;
 
 @Controller
 public class UrlDataController {
@@ -27,15 +27,15 @@ public class UrlDataController {
     private final static Logger logger = LoggerFactory.getLogger(UrlDataController.class);
 
     @Autowired
-    private UrlDataRepository urlDataRepository;
+    private UrlRepository urlDataRepository;
 
     @RequestMapping("/")
-    public String listAll(UrlData search, Model model){
-        Iterable<UrlData> all;
-        if(StringUtils.isNotEmpty(search.getFullUrl()) && StringUtils.isNotEmpty(search.getShortUrl()))
-            all = urlDataRepository.findByFullUrlAndShortUrl(search.getFullUrl(), search.getShortUrl());
-        else if(StringUtils.isNotEmpty(search.getFullUrl()))
-            all = urlDataRepository.findByFullUrl(search.getFullUrl());
+    public String listAll(Url search, Model model){
+        Iterable<Url> all;
+        if(StringUtils.isNotEmpty(search.getOriginalUrl()) && StringUtils.isNotEmpty(search.getShortUrl()))
+            all = urlDataRepository.findByOriginalUrlAndShortUrl(search.getOriginalUrl(), search.getShortUrl());
+        else if(StringUtils.isNotEmpty(search.getOriginalUrl()))
+            all = urlDataRepository.findByOriginalUrl(search.getOriginalUrl());
         else if(StringUtils.isNotEmpty(search.getShortUrl()))
             all = urlDataRepository.findByShortUrl(search.getShortUrl());
         else
@@ -44,20 +44,21 @@ public class UrlDataController {
 
         model.addAttribute("list", all);
         logger.info(all.toString());
-        model.addAttribute("search", search != null ? search : new UrlData());
-        return "index";
+        System.out.println(all.toString());
+        model.addAttribute("search", search != null ? search : new Url());
+        return "index1";
     }
 
     @GetMapping({"/manage-url", "/manage-url/{id}"})
-    public String manageUrl(@PathVariable(required = false) Long id, Model model){
-        UrlData urlData = null;
+    public String manageUrl(@PathVariable(required = false) Integer id, Model model){
+        Url urlData = null;
         if(id != null ){
-            Optional<UrlData> urlDataFetch = urlDataRepository.findById(id);
+            Optional<Url> urlDataFetch = urlDataRepository.findById(id);
             if(urlDataFetch.isPresent()){
                 urlData = urlDataFetch.get();
             }
         } else {
-            urlData = new UrlData();
+            urlData = new Url();
         }
         model.addAttribute("urlData", urlData);
         return "manage-url";
@@ -65,19 +66,19 @@ public class UrlDataController {
 
     @GetMapping("/go/{shortUrl}")
     public String go(@PathVariable String shortUrl, Model model, HttpServletResponse httpServletResponse){
-        List<UrlData> urlData = urlDataRepository.findByShortUrl(shortUrl);
+        List<Url> urlData = urlDataRepository.findByShortUrl(shortUrl);
         if(urlData != null && urlData.size() != 0){
-            httpServletResponse.setHeader("Location", urlData.get(0).getFullUrl());
+            httpServletResponse.setHeader("Location", urlData.get(0).getOriginalUrl());
             httpServletResponse.setStatus(302);
             return null;
         }
         model.addAttribute("list", urlDataRepository.findAll());
-        model.addAttribute("search", new UrlData());
+        model.addAttribute("search", new Url());
         return "index";
     }
 
     @PostMapping("/manage-url")
-    public String save(@Valid UrlData urlData, BindingResult validator, Model model, RedirectAttributes redirAttrs){
+    public String save(@Valid Url urlData, BindingResult validator, Model model, RedirectAttributes redirAttrs){
         if(validator.hasErrors()){
             model.addAttribute("urlData", urlData);
             redirAttrs.addFlashAttribute("error", "Sorry. Please fix the below errors !");
@@ -85,9 +86,9 @@ public class UrlDataController {
         } else {
             // validate unique short_url
             if(urlData.getId() == null){
-                List<UrlData> getData = urlDataRepository.findByShortUrl(urlData.getShortUrl());
+                List<Url> getData = urlDataRepository.findByShortUrl(urlData.getShortUrl());
                 if(getData != null && getData.size() > 0){
-                    validator.addError(new FieldError(UrlData.class.getName(), "shortUrl", "Short URL '"+ urlData.getShortUrl() + "' already exist in system. please choose a different text"));
+                    validator.addError(new FieldError(Url.class.getName(), "shortUrl", "Short URL '"+ urlData.getShortUrl() + "' already exist in system. please choose a different text"));
                     model.addAttribute("urlData", urlData);
                     redirAttrs.addFlashAttribute("error", "Sorry. Please fix the below errors !");
                     return "manage-url";
@@ -101,7 +102,7 @@ public class UrlDataController {
     }
 
     @GetMapping("/manage-url/remove/{id}")
-    public String removeUrl(@PathVariable Long id, RedirectAttributes redirAttrs){
+    public String removeUrl(@PathVariable Integer id, RedirectAttributes redirAttrs){
         urlDataRepository.deleteById(id);
         redirAttrs.addFlashAttribute("success", "Removed short url !");
         return "redirect:/";

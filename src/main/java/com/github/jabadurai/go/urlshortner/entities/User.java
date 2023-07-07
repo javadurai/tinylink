@@ -1,101 +1,39 @@
 package com.github.jabadurai.go.urlshortner.entities;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import jakarta.persistence.*;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+
 import java.io.Serializable;
-import java.util.Date;
+import java.util.Set;
 
 @Entity
+@Table(name = "users")
+@Data
+@EqualsAndHashCode(callSuper = false)
 public class User implements Serializable {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    private String userid;
+    @Column(unique = true, nullable = false)
+    private String username;
 
-    private String firstName;
-
-    private String lastName;
-
-    private String password;
-
-    private Date registeredDate;
-
+    @Column(unique = true, nullable = false)
     private String email;
 
-    public User(){
+    @Column(name = "password_hash", nullable = false)
+    private String passwordHash;
 
-    }
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
 
-    public Long getId() {
-        return id;
-    }
+    @Column(name = "is_active", nullable = false)
+    private Boolean isActive;
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<UserUrlOwnership> userUrlOwnerships;
 
-    public String getUserid() {
-        return userid;
-    }
-
-    public void setUserid(String userid) {
-        this.userid = userid;
-    }
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Date getRegisteredDate() {
-        return registeredDate;
-    }
-
-    public void setRegisteredDate(Date registeredDate) {
-        this.registeredDate = registeredDate;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", userid='" + userid + '\'' +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", password='" + password + '\'' +
-                ", registeredDate=" + registeredDate +
-                ", email='" + email + '\'' +
-                '}';
-    }
 }
