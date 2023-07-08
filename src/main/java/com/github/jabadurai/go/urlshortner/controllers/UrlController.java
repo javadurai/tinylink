@@ -3,6 +3,7 @@ package com.github.jabadurai.go.urlshortner.controllers;
 import com.github.jabadurai.go.urlshortner.entities.Url;
 import com.github.jabadurai.go.urlshortner.repositories.UrlRepository;
 import com.github.jabadurai.go.urlshortner.utils.StringUtils;
+import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,7 @@ public class UrlController {
     private UrlRepository urlRepository;
 
     @RequestMapping("/")
+    @Transactional
     public String listAll(Url search, Model model){
         Iterable<Url> all;
         if(StringUtils.isNotEmpty(search.getOriginalUrl()) && StringUtils.isNotEmpty(search.getShortUrl()))
@@ -41,6 +43,9 @@ public class UrlController {
         else
             all = urlRepository.findAll();
 
+        for (Url url: all ) {
+            url.getOwners();
+        }
 
         model.addAttribute("list", all);
         logger.info(all.toString());

@@ -4,14 +4,11 @@ import com.github.jabadurai.go.urlshortner.service.UserDetailsServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
@@ -41,7 +38,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web
                 .ignoring()
-                .requestMatchers("/h2-console","/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico");
+                .requestMatchers("/go/**","/h2-console","/css/**", "/js/**", "/img/**", "/lib/**", "/favicon.ico");
     }
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -50,7 +47,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable);
 
 
-        http.authorizeHttpRequests((req) -> req.requestMatchers("/h2-console").permitAll());
+        http.authorizeHttpRequests((req) -> req.requestMatchers("/h2-console","/go/**").permitAll());
 
         //
         http.formLogin(httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer.loginPage("/login")

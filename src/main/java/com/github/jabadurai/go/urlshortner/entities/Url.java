@@ -27,7 +27,7 @@ public class Url extends BaseEntity {
     @Column(name = "click_count")
     private Integer clickCount;
 
-    @OneToMany(mappedBy = "url", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "url", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Set<UserUrlOwnership> userUrlOwnerships;
 
     public String getOwners(){

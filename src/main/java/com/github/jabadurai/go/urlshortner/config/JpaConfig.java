@@ -2,7 +2,6 @@ package com.github.jabadurai.go.urlshortner.config;
 
 import com.github.jabadurai.go.urlshortner.entities.CustomUserDetails;
 import com.github.jabadurai.go.urlshortner.repositories.UserRepository;
-import com.sun.security.auth.UserPrincipal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
