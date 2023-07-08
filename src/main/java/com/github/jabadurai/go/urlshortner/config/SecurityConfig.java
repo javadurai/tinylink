@@ -1,14 +1,18 @@
 package com.github.jabadurai.go.urlshortner.config;
 
 import com.github.jabadurai.go.urlshortner.service.UserDetailsServiceImpl;
-import lombok.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.FormLoginConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HttpBasicConfigurer;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -42,7 +46,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
+        // Disable CSRF for application
+        http.csrf(AbstractHttpConfigurer::disable);
+
+
         http.authorizeHttpRequests((req) -> req.requestMatchers("/h2-console").permitAll());
+
+        //
+        http.formLogin(httpSecurityFormLoginConfigurer -> httpSecurityFormLoginConfigurer.loginPage("/login")
+                .permitAll());
 
         http.passwordManagement((management) -> management
                 .changePasswordPage("/update-password")
@@ -54,10 +66,11 @@ public class SecurityConfig {
                 .loginPage("/login")
                 .permitAll()
             )
-            .logout((logout) -> logout.permitAll());
+            .logout(LogoutConfigurer::permitAll);
 
         return http.build();
     }
+
 
     @Bean
     public UserDetailsService userDetailsService() {

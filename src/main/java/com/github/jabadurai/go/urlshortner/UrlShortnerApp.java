@@ -13,11 +13,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 @SpringBootApplication
-@EnableAutoConfiguration
-@ComponentScan(basePackages={"com.github.jabadurai.go.urlshortner"})
 @EnableJpaRepositories(basePackages="com.github.jabadurai.go.urlshortner.repositories")
 @EnableTransactionManagement
-@EntityScan(basePackages="com.github.jabadurai.go.urlshortner.entities")
 public class UrlShortnerApp {
 
 	public static void main(String[] args) {

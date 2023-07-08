@@ -24,7 +24,7 @@ public class Url extends BaseEntity {
     @Column(name = "original_url", nullable = false, columnDefinition = "TEXT")
     private String originalUrl;
 
-    @Column(name = "click_count", nullable = false)
+    @Column(name = "click_count")
     private Integer clickCount;
 
     @OneToMany(mappedBy = "url", cascade = CascadeType.ALL)
