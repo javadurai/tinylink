@@ -5,6 +5,9 @@ import com.github.jabadurai.tinylink.entities.User;
 import com.github.jabadurai.tinylink.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -41,5 +44,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             return Optional.ofNullable(userDetails.getUser().getId());
         }
         return Optional.empty();
+    }
+
+    public Page<User> findPaginated(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        return this.userRepository.findAll(pageable);
     }
 }
