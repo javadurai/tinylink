@@ -1,6 +1,8 @@
 package com.github.jabadurai.tinylink.config;
 
+import com.github.jabadurai.tinylink.service.CustomAuthenticationFailureHandler;
 import com.github.jabadurai.tinylink.service.UserDetailsServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,6 +22,9 @@ import org.springframework.security.web.SecurityFilterChain;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+//    @Autowired
+//    private CustomAuthenticationFailureHandler customAuthenticationFailureHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -72,6 +77,7 @@ public class SecurityConfig {
             )
             .formLogin((form) -> form
                 .loginPage("/login")
+//                .failureHandler(customAuthenticationFailureHandler)
                 .permitAll()
             )
             .logout(LogoutConfigurer::permitAll);

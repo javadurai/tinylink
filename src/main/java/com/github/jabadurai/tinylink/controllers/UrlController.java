@@ -4,6 +4,7 @@ import com.github.jabadurai.tinylink.entities.Url;
 import com.github.jabadurai.tinylink.repositories.UrlRepository;
 import com.github.jabadurai.tinylink.service.UrlService;
 import com.github.jabadurai.tinylink.utils.Paginator;
+import com.github.jabadurai.tinylink.utils.StringUtils;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -132,7 +133,17 @@ public class UrlController extends Paginator<Url> {
     }
 
     @GetMapping("/login")
-    public String loginPage(){
+    public String loginPage(@RequestParam(value = "error", required = false) String error, Model model) {
+        if (StringUtils.isNotEmpty(error)) {
+            model.addAttribute("error", error);
+        } else if (error != null){
+            model.addAttribute("error", "Invalid username or password");
+        }
         return "login";
     }
+
+//    @RequestMapping("/error")
+//    public String error(){
+//        return "redirect:/";
+//    }
 }

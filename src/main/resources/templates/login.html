@@ -43,6 +43,9 @@
                         </div>
                     </div>
                     <form th:action="@{/login}" id="form" th:class="form" method="post">
+                        <div th:if="${error}" class="alert alert-danger" role="alert">
+                            <p th:text="${error}"></p>
+                        </div>
                         <div class="mb-3">
                             <label for="username" class="form-label">Username</label>
                             <input type="text" class="form-control" id="username" name="username" value="admin" required>
