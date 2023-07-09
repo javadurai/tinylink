@@ -2,6 +2,7 @@ package com.github.jabadurai.tinylink.service;
 
 import com.github.jabadurai.tinylink.entities.CustomUserDetails;
 import com.github.jabadurai.tinylink.entities.User;
+import com.github.jabadurai.tinylink.entities.UserRole;
 import com.github.jabadurai.tinylink.repositories.UserRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,5 +50,19 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     public Page<User> findPaginated(int pageNo, int pageSize) {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return this.userRepository.findAll(pageable);
+    }
+
+    public boolean isCurrenLoggedInUserAdmin(){
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !authentication.isAuthenticated()) {
+            return false;
+        }
+
+        if (authentication.getPrincipal() instanceof CustomUserDetails userDetails) {
+            return userDetails.getUser().getRole().equals(UserRole.ADMIN);
+        }
+
+        return false;
     }
 }

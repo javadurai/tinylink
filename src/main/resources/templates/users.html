@@ -19,12 +19,14 @@
 <body>
 <div class="container bg-light pt-5">
     <div th:insert="~{fragments/general :: navbar}"></div>
-    <h3 class="header">Manage Users</h3>
 
-    <button type="button" class="btn btn-secondary mb-3" data-bs-toggle="modal" data-bs-target="#userModal"
-            onclick="clearModal()">
-        <i class="fas fa-plus"></i> Add User
-    </button>
+    <div class="m-3 d-flex justify-content-between align-items-center">
+        <h3 class="header">Manage Users</h3>
+        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#userModal"
+                onclick="clearModal()">
+            <i class="fas fa-plus"></i> Add User
+        </button>
+    </div>
 
     <div th:replace="~{fragments/general :: pagination}"></div>
 
@@ -224,11 +226,12 @@
         function submitForm() {
             const userId = document.getElementById('userId').value;
             const username = document.getElementById('username').value;
+            const fullName = document.getElementById('fullName').value;
             const email = document.getElementById('email').value;
             const role = document.getElementById('role').value;
             const password = document.getElementById('password').value;
 
-            const data = { id: userId, username, email, role};
+            const data = { id: userId, fullName, username, email, role};
 
             if (userId == ""){
                 data.password = password;

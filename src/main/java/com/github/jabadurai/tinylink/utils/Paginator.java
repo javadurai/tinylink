@@ -17,6 +17,14 @@ public abstract class Paginator<T> {
         if (endPage == page.getTotalPages()) {
             startPage = Math.max(1, page.getTotalPages() - 6);
         }
+
+        // Showing x to y of z entries
+        int currentStartEntry = (pageNo - 1) * PAGE_SIZE + 1;
+        int currentEndEntry = (int) Math.min(currentStartEntry + PAGE_SIZE - 1, page.getTotalElements());
+
+        model.addAttribute("currentStartEntry", currentStartEntry);
+        model.addAttribute("currentEndEntry", currentEndEntry);
+
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
         model.addAttribute("baseURL", "/" + baseUrl);

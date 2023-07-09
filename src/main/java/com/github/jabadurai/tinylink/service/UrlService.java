@@ -67,4 +67,16 @@ public class UrlService {
         Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
         return this.urlRepository.findAll(pageable);
     }
+
+    public Page<Url> findOwnedByMePaginated(int pageNo, int pageSize) {
+        if(userDetailsServiceImpl.currentLoggedInUserId().isPresent()){
+            Integer currentUserId = userDetailsServiceImpl.currentLoggedInUserId().get();
+            Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+            return this.urlRepository.findByOwnedByUser(currentUserId, pageable);
+        } else{
+            return findPaginated(pageNo, pageSize);
+        }
+    }
+
+
 }

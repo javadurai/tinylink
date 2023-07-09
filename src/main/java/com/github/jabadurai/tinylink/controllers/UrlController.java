@@ -42,12 +42,14 @@ public class UrlController extends Paginator<Url> {
     }
 
     @GetMapping("/my-links")
-    public String myUrls(Model model){
-        model.addAttribute("title", "Links Owned by Me");
-        Iterable<Url> all = urlService.getLinks(false);
+    public String myUrls(Model model, @RequestParam(defaultValue = "1") int pageNo){
+        Page<Url> page = urlService.findOwnedByMePaginated(pageNo, PAGE_SIZE);
+        List<Url> listUsers = page.getContent();
 
-        model.addAttribute("list", all);
-        logger.info(all.toString());
+        addPageDetailsToModel(model, pageNo, page, "my-links");
+
+        model.addAttribute("listLinks", listUsers);
+        model.addAttribute("title", "Links Owned by Me");
 
         return "links";
     }
@@ -60,6 +62,7 @@ public class UrlController extends Paginator<Url> {
         addPageDetailsToModel(model, pageNo, page, "all-links");
 
         model.addAttribute("listLinks", listUsers);
+        model.addAttribute("title", "All Links in System");
         return "links";
     }
 
