@@ -11,11 +11,73 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@100&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
 <div class="container mt-5">
     <div th:insert="~{fragments/general :: navbar}"></div>
-    <h3>User Guide</h3>
+    <h3 class="header">User Guide</h3>
+
+    <h2>Introduction</h2>
+    <p>
+        Welcome to our application! This User Guide provides you with all the information you need to get the most out of our app.
+        It includes details on how to use key features, as well as answers to frequently asked questions.
+    </p>
+
+    <h2>Key Features</h2>
+    <ul>
+        <li><strong>Manage Users:</strong> Admins can add, edit, activate, deactivate, and delete users.</li>
+        <!-- Add more features as necessary -->
+    </ul>
+
+    <h2>Managing Users</h2>
+    <p>
+        To manage users, navigate to the 'Manage Users' page. Here you can see a table of all users, their email addresses, roles,
+        and whether they are currently active.
+    </p>
+    <p>
+        <strong>To add a new user:</strong> Click the 'Add User' button, fill in the details in the form, and click 'Save User'.
+    </p>
+    <p>
+        <strong>To edit a user:</strong> Click the 'Edit' button in the user's row, make changes in the form, and click 'Save Changes'.
+    </p>
+    <p>
+        <strong>To deactivate a user:</strong> Click the 'Deactivate User' button in the user's row.
+    </p>
+    <p>
+        <strong>To activate a user:</strong> Click the 'Activate User' button in the user's row.
+    </p>
+    <p>
+        <strong>To delete a user:</strong> Click the 'Delete' button in the user's row, then confirm your decision in the pop-up window.
+    </p>
+
+    <h2>Managing Links</h2>
+    <p>
+        Our application allows you to manage multiple links. Here's how you can make the most of this feature:
+    </p>
+    <p>
+        <strong>To add a new link:</strong> Navigate to the 'Manage Links' page and click on the 'Add Link' button.
+        Provide the necessary details in the form and click 'Save Link'.
+    </p>
+    <p>
+        <strong>To edit a link:</strong> On the 'Manage Links' page, find the link you want to edit and click the 'Edit'
+        button in the corresponding row. Make your changes in the form that appears and then click 'Save Changes'.
+    </p>
+    <p>
+        <strong>To delete a link:</strong> On the 'Manage Links' page, click the 'Delete' button in the row of the link
+        you wish to remove. Confirm your decision in the pop-up window.
+    </p>
+
+    <!-- Add more guides as necessary -->
+
+    <h2>FAQs</h2>
+    <p>
+        <strong>Q: How do I reset my password?</strong><br>
+        A: Click the 'Forgot Password' link on the login page and follow the instructions to reset your password.
+    </p>
     <div th:insert="~{fragments/general :: footer}"></div>
 </div>
 </body>

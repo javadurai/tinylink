@@ -11,12 +11,251 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@100&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
 <div class="container mt-5">
     <div th:insert="~{fragments/general :: navbar}"></div>
-    <h3>Manage Users</h3>
+    <h3 class="header">Manage Users</h3>
+
+    <button type="button" class="btn btn-secondary mb-3" data-bs-toggle="modal" data-bs-target="#userModal"
+            onclick="clearModal()">
+        <i class="fas fa-plus"></i> Add User
+    </button>
+
+    <table class="table table-bordered table-striped">
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>Full Name</th>
+            <th>Username</th>
+            <th>Email</th>
+            <th class="text-center">Role</th>
+            <th class="text-center">Active</th>
+            <th class="text-center">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="user, iterStat : ${users}">
+            <th class="text-center" th:text="${iterStat.count}"></th>
+            <td th:text="${user.fullName}"></td>
+            <td th:text="${user.username}"></td>
+            <td th:text="${user.email}"></td>
+            <td class="text-center" th:text="${user.role}"></td>
+            <td class="text-center">
+                <span th:if="${user.isActive}" class="badge bg-success"> Yes </span>
+                <span th:if="${!user.isActive}" class="badge bg-danger"> No </span>
+            </td>
+            <td class="text-center">
+                <a href="#" class="btn btn-success btn-sm"
+                   th:attr="onclick=|editUser('${user.id}','${user.fullName}','${user.username}', '${user.email}', '${user.role}')|"><i class="fas fa-edit"></i> Edit</a>
+                <span th:if="${#authentication.name} != ${user.username}">
+                    <a th:if="${user.isActive}" href="#" class="btn btn-warning btn-sm" th:attr="onclick=|deactivateUser('${user.id}')|"><i class="fas fa-user-times"></i> Deactivate User</a>
+                    <a th:if="${!user.isActive}" href="#" class="btn btn-success btn-sm" th:attr="onclick=|activateUser('${user.id}')|"><i class="fas fa-user-check"></i> Activate User</a>
+                </span>
+            </td>
+        </tr>
+        <!-- More users can go here -->
+        </tbody>
+    </table>
+
+    <!-- Add User Modal -->
+    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="userModalLabel">Add User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="userForm">
+                        <input type="hidden" id="userId">
+                        <div class="mb-3">
+                            <label for="fullName" class="form-label">Full Name</label>
+                            <input type="text" class="form-control" id="fullName">
+                        </div>
+                        <div class="mb-3">
+                            <label for="username" class="form-label">Username</label>
+                            <input type="text" class="form-control" id="username">
+                        </div>
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <input type="email" class="form-control" id="email">
+                        </div>
+                        <div class="mb-3" id="passwordSection">
+                            <label for="password" class="form-label">Password</label>
+                            <input type="password" class="form-control" id="password">
+                        </div>
+                        <div class="mb-3">
+                            <label for="role" class="form-label">Role</label>
+                            <select class="form-control" id="role">
+                                <option>ADMIN</option>
+                                <option>USER</option>
+                            </select>
+                        </div>
+                        <!--<div class="mb-3 form-check">
+                            <input type="checkbox" class="form-check-input" id="active">
+                            <label class="form-check-label" for="active">Active</label>
+                        </div>-->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitForm()">Save User</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Deactivate User Modal -->
+    <div class="modal fade" id="deactivateUserModal" tabindex="-1" aria-labelledby="deactivateUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deactivateUserModalLabel">Deactivate User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to deactivate this user?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-warning" onclick="confirmDeactivateUser()">Confirm Deactivate</button>
+                    <input type="hidden" id="deactivateUserId">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Activate User Modal -->
+    <div class="modal fade" id="activateUserModal" tabindex="-1" aria-labelledby="activateUserModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="activateUserModalLabel">Activate User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Are you sure you want to activate this user?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-success" onclick="confirmActivateUser()">Confirm Activate</button>
+                    <input type="hidden" id="activateUserId">
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <div th:insert="~{fragments/general :: footer}"></div>
+
+    <script>
+
+
+        function clearModal() {
+            document.getElementById('userForm').reset();
+            document.getElementById('userModalLabel').innerHTML = 'New User';
+            document.getElementById('userId').value = ''; // clear urlId
+            document.getElementById('passwordSection').style.display = 'revert';
+        }
+
+        function editUser(id, fullName, username, email, role) {
+            document.getElementById('userId').value = id;
+            document.getElementById('fullName').value = fullName;
+            document.getElementById('username').value = username;
+            document.getElementById('email').value = email;
+            document.getElementById('role').value = role;
+            document.getElementById('passwordSection').style.display = 'none';
+            document.getElementById('userModalLabel').innerHTML = 'Edit User';
+            var myModal = new bootstrap.Modal(document.getElementById('userModal'));
+            myModal.show();
+        }
+
+        function deactivateUser(id) {
+            document.getElementById('deactivateUserId').value = id;
+            var myModal = new bootstrap.Modal(document.getElementById('deactivateUserModal'));
+            myModal.show();
+        }
+
+        function activateUser(id) {
+            document.getElementById('activateUserId').value = id;
+            var myModal = new bootstrap.Modal(document.getElementById('activateUserModal'));
+            myModal.show();
+        }
+
+        function confirmActivateUser() {
+            const urlId = document.getElementById('activateUserId').value;
+
+            $.ajax({
+                type: "POST",
+                url: "/api/users/activate/" + urlId,
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr.responseJSON.message);
+                }
+            });
+        }
+
+        function confirmDeactivateUser() {
+            const urlId = document.getElementById('deactivateUserId').value;
+
+            $.ajax({
+                type: "POST",
+                url: "/api/users/deactivate/" + urlId,
+                success: function (response) {
+                    location.reload();
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr.responseJSON.message);
+                }
+            });
+        }
+
+        function submitForm() {
+            const userId = document.getElementById('userId').value;
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const role = document.getElementById('role').value;
+            const password = document.getElementById('password').value;
+
+            const data = { id: userId, username, email, role};
+
+            if (userId == ""){
+                data.password = password;
+            }
+
+            $.ajax({
+                type: "POST",
+                url: "/api/users",
+                data: JSON.stringify(data),
+                contentType: "application/json",
+                success: function (response) {
+                    location.reload(); // or update the table using JavaScript
+                },
+                error: function (xhr, status, error) {
+                    alert(xhr.responseJSON.message);
+                }
+            });
+        }
+
+        function saveOwnershipChanges() {
+            // Logic to save the changes in ownership
+            // This could involve sending the data to the server
+            alert('Ownership changes saved'); // This is just a placeholder
+        }
+
+        $(document).ready(function () {
+            $('.owner-selection').select2();
+        });
+
+    </script>
+
 </div>
 </body>
 </html>
