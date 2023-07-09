@@ -65,4 +65,23 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
         return false;
     }
+
+    public void saveUser(User user){
+
+        if(user.getId() != null){
+            Optional<User> userFromDb = userRepository.findById(user.getId());
+            if(userFromDb.isPresent()){
+                User updatedUser = userFromDb.get();
+                updatedUser.setUsername(user.getUsername());
+                updatedUser.setEmail(user.getEmail());
+                updatedUser.setRole(user.getRole());
+
+                user = updatedUser;
+            }
+        }
+
+        userRepository.save(user);
+
+    }
+
 }

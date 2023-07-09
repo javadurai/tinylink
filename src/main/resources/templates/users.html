@@ -76,7 +76,8 @@
                     <h5 class="modal-title" id="userModalLabel"><i class="fas fa-user-plus"></i> Add User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body"><!-- The error message will be inserted here -->
+                    <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
                     <form id="userForm">
                         <input type="hidden" id="userId">
                         <div class="mb-3">
@@ -239,9 +240,25 @@
                 contentType: "application/json",
                 success: function (response) {
                     location.reload(); // or update the table using JavaScript
+
+                    // Find the error message div
+                    let errorMessageDiv = document.getElementById('errorMessage');
+
+                    // Add the 'd-none' class to hide the div
+                    errorMessageDiv.classList.add('d-none');
+
+                    // Clear the text content of the div
+                    errorMessageDiv.textContent = '';
                 },
                 error: function (xhr, status, error) {
-                    alert(xhr.responseJSON.message);
+                    // Find the error message div and update it
+                    let errorMessageDiv = document.getElementById('errorMessage');
+
+                    // Remove the 'd-none' class to make the div visible
+                    errorMessageDiv.classList.remove('d-none');
+
+                    // Update the text content of the div
+                    errorMessageDiv.textContent = xhr.responseJSON.message;
                 }
             });
         }

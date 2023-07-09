@@ -1,6 +1,9 @@
 package com.github.jabadurai.tinylink.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -17,18 +20,24 @@ public class User implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank(message = "Full name is mandatory")
     @Column(name = "full_name", nullable = false)
     private String fullName;
 
+    @NotBlank(message = "Username is mandatory")
     @Column(unique = true, nullable = false)
     private String username;
 
+    @NotBlank(message = "Email is mandatory")
+    @Email(message = "Email should be valid")
     @Column(unique = true, nullable = false)
     private String email;
 
+    @NotBlank(message = "Password is mandatory")
     @Column(name = "password", nullable = false)
     private String password;
 
+    @NotNull(message = "Role is mandatory")
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private UserRole role;
