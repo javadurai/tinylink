@@ -1,12 +1,16 @@
 package com.github.jabadurai.tinylink.service;
 
 import com.github.jabadurai.tinylink.entities.Url;
+import com.github.jabadurai.tinylink.entities.User;
 import com.github.jabadurai.tinylink.entities.UserUrlOwnership;
 import com.github.jabadurai.tinylink.repositories.UrlRepository;
 import com.github.jabadurai.tinylink.repositories.UserUrlOwnershipRepository;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.Iterator;
@@ -57,5 +61,10 @@ public class UrlService {
         }
 
         return all;
+    }
+
+    public Page<Url> findPaginated(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo - 1, pageSize);
+        return this.urlRepository.findAll(pageable);
     }
 }

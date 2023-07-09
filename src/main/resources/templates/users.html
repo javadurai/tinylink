@@ -17,7 +17,7 @@
     <link rel="stylesheet" href="/css/style.css" />
 </head>
 <body>
-<div class="container mt-5">
+<div class="container bg-light pt-5">
     <div th:insert="~{fragments/general :: navbar}"></div>
     <h3 class="header">Manage Users</h3>
 
@@ -26,10 +26,12 @@
         <i class="fas fa-plus"></i> Add User
     </button>
 
+    <div th:replace="~{fragments/general :: pagination}"></div>
+
     <table class="table table-bordered table-striped">
-        <thead>
+        <thead class="bg-dark-subtle">
         <tr>
-            <th>#</th>
+            <th class="text-center">#</th>
             <th>Full Name</th>
             <th>Username</th>
             <th>Email</th>
@@ -39,8 +41,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="user, iterStat : ${users}">
-            <th class="text-center" th:text="${iterStat.count}"></th>
+        <tr th:each="user, iterStat : ${listUsers}">
+            <th class="text-center" th:text="${user.id}"></th>
             <td th:text="${user.fullName}"></td>
             <td th:text="${user.username}"></td>
             <td th:text="${user.email}"></td>
@@ -61,6 +63,8 @@
         <!-- More users can go here -->
         </tbody>
     </table>
+
+    <div th:replace="~{fragments/general :: pagination}"></div>
 
     <!-- Add User Modal -->
     <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">

@@ -3,11 +3,11 @@ package com.github.jabadurai.tinylink.controllers;
 import com.github.jabadurai.tinylink.entities.Url;
 import com.github.jabadurai.tinylink.repositories.UrlRepository;
 import com.github.jabadurai.tinylink.service.UrlService;
-import com.github.jabadurai.tinylink.utils.StringUtils;
+import com.github.jabadurai.tinylink.utils.Paginator;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -21,7 +21,7 @@ import java.util.Optional;
 import jakarta.validation.Valid;
 
 @Controller
-public class UrlController {
+public class UrlController extends Paginator<Url> {
 
     private final static Logger logger = LoggerFactory.getLogger(UrlController.class);
 
@@ -36,25 +36,9 @@ public class UrlController {
 
     @RequestMapping("/")
     @Transactional
-    public String listAll(Url search, Model model){
-        Iterable<Url> all;
-        if(StringUtils.isNotEmpty(search.getOriginalUrl()) && StringUtils.isNotEmpty(search.getShortUrl()))
-            all = urlRepository.findByOriginalUrlAndShortUrl(search.getOriginalUrl(), search.getShortUrl());
-        else if(StringUtils.isNotEmpty(search.getOriginalUrl()))
-            all = urlRepository.findByOriginalUrl(search.getOriginalUrl());
-        else if(StringUtils.isNotEmpty(search.getShortUrl()))
-            all = urlRepository.findByShortUrl(search.getShortUrl());
-        else
-            all = urlRepository.findAll();
+    public String dashboard(Model model){
 
-        for (Url url: all ) {
-            url.getOwners();
-        }
-
-        model.addAttribute("list", all);
-        logger.info(all.toString());
-        System.out.println(all.toString());
-        return "index";
+        return "dashboard";
     }
 
     @GetMapping("/my-links")
@@ -65,17 +49,18 @@ public class UrlController {
         model.addAttribute("list", all);
         logger.info(all.toString());
 
-        return "index";
+        return "links";
     }
 
     @GetMapping("/all-links")
-    public String allUrls(Model model){
-        model.addAttribute("title", "All Links");
-        Iterable<Url> all = urlService.getLinks(true);
+    public String allUrls(Model model, @RequestParam(defaultValue = "1") int pageNo){
+        Page<Url> page = urlService.findPaginated(pageNo, PAGE_SIZE);
+        List<Url> listUsers = page.getContent();
 
-        model.addAttribute("list", all);
-        logger.info(all.toString());
-        return "index";
+        addPageDetailsToModel(model, pageNo, page, "all-links");
+
+        model.addAttribute("listLinks", listUsers);
+        return "links";
     }
 
     @GetMapping({"/manage-url", "/manage-url/{id}"})

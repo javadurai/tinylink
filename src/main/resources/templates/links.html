@@ -19,7 +19,7 @@
 
 <body>
 
-<div class="container mt-5">
+<div class="container bg-light pt-5">
 
     <div th:insert="~{fragments/general :: navbar}"></div>
 
@@ -31,8 +31,10 @@
         </button>
     </div>
 
+    <div th:replace="~{fragments/general :: pagination}"></div>
+
     <table class="table table-bordered table-striped">
-        <thead>
+        <thead class="bg-dark-subtle">
         <tr>
             <th class="text-center">#</th>
             <th class="text-center">Short Link</th>
@@ -43,8 +45,8 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="url, iterStat : ${list}">
-            <th class="text-center" th:text="${iterStat.count}"></th>
+        <tr th:each="url, iterStat : ${listLinks}">
+            <th class="text-center" th:text="${url.id}"></th>
             <td><a target="_blank" class="teal-text" th:text="${url.shortUrl}" th:href="@{/go/{shortUrl}(shortUrl=${url.shortUrl})}"/></td>
             <td th:text="${url.originalUrl}"></td>
             <td class="text-center" th:text="${url.owners}"></td>
@@ -61,6 +63,8 @@
         </tr>
         </tbody>
     </table>
+
+    <div th:replace="~{fragments/general :: pagination}"></div>
 
     <div th:insert="~{fragments/general :: footer}"></div>
 </div>
