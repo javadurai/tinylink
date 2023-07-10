@@ -1,11 +1,14 @@
 package com.github.jabadurai.tinylink.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "urls")
@@ -18,9 +21,12 @@ public class Url extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank(message = "Short URL cannot be empty")
+    @Size(max = 255, message = "Short URL cannot exceed 255 characters")
     @Column(name = "short_url", unique = true, nullable = false)
     private String shortUrl;
 
+    @NotBlank(message = "Original URL cannot be empty")
     @Column(name = "original_url", nullable = false, columnDefinition = "TEXT")
     private String originalUrl;
 
@@ -31,15 +37,12 @@ public class Url extends BaseEntity {
     private List<UserUrlOwnership> userUrlOwnerships;
 
     public String getOwners(){
-        StringBuilder owners= new StringBuilder();
-        for (UserUrlOwnership userUrlOwnership :  this.userUrlOwnerships) {
-            owners.append(userUrlOwnership.getUser().getUsername() + " ");
-        }
-
-        return owners.toString();
+        List<String> owners = this.userUrlOwnerships.stream().map(o -> o.getUser().getFullName()).collect(Collectors.toList());
+        return String.join(", ", owners);
     }
 
     @PrePersist
+    @PreUpdate
     public void prePersist() {
         // We check for null first to respect explicitly set values
         if (this.clickCount == null) {

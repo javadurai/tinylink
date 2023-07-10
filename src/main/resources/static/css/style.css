@@ -6,3 +6,7 @@
 .select2-dropdown {
   z-index: 1051;
 }
+
+.login-selector{
+    cursor: pointer;
+}

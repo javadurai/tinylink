@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.util.Optional;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
-    User findByUsername(String username);
+    Optional<User> findByUsername(String username);
 
     @Modifying
     @Query("update User u set u.isActive = false where u.id = ?1")
@@ -19,8 +21,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     void activateUser(Integer userid);
 
     @Modifying
-    @Query("update User u set u.password = ?1 where u.id = ?2")
-    void updatePassword(String password, Integer userid);
+    @Query("update User u set u.password = ?2 where u.id = ?1")
+    void changePassword(Integer userid, String password);
 
     @Modifying
     @Query("update User u set u.email = ?1 where u.id = ?2")

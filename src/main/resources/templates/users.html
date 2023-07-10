@@ -81,23 +81,23 @@
                     <form id="userForm">
                         <input type="hidden" id="userId">
                         <div class="mb-3">
-                            <label for="fullName" class="form-label"><i class="fas fa-user"></i> Full Name</label>
+                            <label for="fullName" class="form-label"><i class="fas fa-user"></i> Full Name <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="fullName">
                         </div>
                         <div class="mb-3">
-                            <label for="username" class="form-label"><i class="fas fa-user-circle"></i> Username</label>
+                            <label for="username" class="form-label"><i class="fas fa-user-circle"></i> Username <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="username">
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label"><i class="fas fa-envelope"></i> Email</label>
+                            <label for="email" class="form-label"><i class="fas fa-envelope"></i> Email <span class="text-danger">*</span></label>
                             <input type="email" class="form-control" id="email">
                         </div>
                         <div class="mb-3" id="passwordSection">
-                            <label for="password" class="form-label"><i class="fas fa-key"></i> Password</label>
+                            <label for="password" class="form-label"><i class="fas fa-key"></i> Password <span class="text-danger">*</span></label>
                             <input type="password" class="form-control" id="password">
                         </div>
                         <div class="mb-3">
-                            <label for="role" class="form-label"><i class="fas fa-user-tag"></i> Role</label>
+                            <label for="role" class="form-label"><i class="fas fa-user-tag"></i> Role <span class="text-danger">*</span></label>
                             <select class="form-control" id="role">
                                 <option>ADMIN</option>
                                 <option>USER</option>
@@ -163,9 +163,19 @@
             document.getElementById('userModalLabel').innerHTML = 'New User';
             document.getElementById('userId').value = ''; // clear urlId
             document.getElementById('passwordSection').style.display = 'revert';
+
+            // Find the error message div
+            let errorMessageDiv = document.getElementById('errorMessage');
+
+            // Add the 'd-none' class to hide the div
+            errorMessageDiv.classList.add('d-none');
+
+            // Clear the text content of the div
+            errorMessageDiv.textContent = '';
         }
 
         function editUser(id, fullName, username, email, role) {
+            clearModal();
             document.getElementById('userId').value = id;
             document.getElementById('fullName').value = fullName;
             document.getElementById('username').value = username;
@@ -257,9 +267,14 @@
                     // Remove the 'd-none' class to make the div visible
                     errorMessageDiv.classList.remove('d-none');
 
-                    // Update the text content of the div
-                    errorMessageDiv.textContent = xhr.responseJSON.message;
-                }
+                    // Create a combined error message
+                    let combinedErrorMessage = '';
+                    for (let i = 0; i < xhr.responseJSON.length; i++) {
+                        combinedErrorMessage += xhr.responseJSON[i].defaultMessage + '<br>';
+                    }
+
+                    // Update the inner HTML of the div
+                    errorMessageDiv.innerHTML = combinedErrorMessage;                }
             });
         }
 
