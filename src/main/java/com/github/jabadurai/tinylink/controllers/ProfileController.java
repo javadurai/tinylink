@@ -31,8 +31,8 @@ public class ProfileController {
     }
 
     @GetMapping("/password")
-    public String changePassword(){
-
+    public String changePassword(Model model){
+        model.addAttribute("changePasswordRequest", new ChangePasswordRequest());
         return "password";
     }
 
@@ -43,6 +43,7 @@ public class ProfileController {
 
         if (bindingResult.hasErrors()){
             model.addAttribute("error", bindingResult.getFieldError().getDefaultMessage());
+            model.addAttribute("changePasswordRequest", changePasswordRequest);
             return "password";
         }
 

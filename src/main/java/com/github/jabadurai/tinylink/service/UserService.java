@@ -11,8 +11,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
@@ -153,6 +155,23 @@ public class UserService {
     @Transactional
     public void changePassword(ChangePasswordRequest changePasswordRequest) {
         Optional<Integer> currentUserId = currentLoggedInUserId();
-        currentUserId.ifPresent(integer -> userRepository.changePassword(integer, changePasswordRequest.getNewPassword()));
+        currentUserId.ifPresent(integer -> {
+            userRepository.changePassword(integer, changePasswordRequest.getNewPassword());
+
+            // Get the updated user
+            Optional<User> updatedUser = userRepository.findById(integer);
+
+            if (updatedUser.isPresent()){
+                // Create a new UserDetails object
+                UserDetails updatedUserDetails = new CustomUserDetails(updatedUser.get());
+
+                // Create a new authentication token
+                UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(updatedUserDetails, null, updatedUserDetails.getAuthorities());
+
+                // Set the new authentication object to SecurityContextHolder
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        });
+
     }
 }
