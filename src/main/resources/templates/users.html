@@ -73,44 +73,41 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="userModalLabel">Add User</h5>
+                    <h5 class="modal-title" id="userModalLabel"><i class="fas fa-user-plus"></i> Add User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body"><!-- The error message will be inserted here -->
+                    <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
                     <form id="userForm">
                         <input type="hidden" id="userId">
                         <div class="mb-3">
-                            <label for="fullName" class="form-label">Full Name</label>
+                            <label for="fullName" class="form-label"><i class="fas fa-user"></i> Full Name <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="fullName">
                         </div>
                         <div class="mb-3">
-                            <label for="username" class="form-label">Username</label>
+                            <label for="username" class="form-label"><i class="fas fa-user-circle"></i> Username <span class="text-danger">*</span></label>
                             <input type="text" class="form-control" id="username">
                         </div>
                         <div class="mb-3">
-                            <label for="email" class="form-label">Email</label>
+                            <label for="email" class="form-label"><i class="fas fa-envelope"></i> Email <span class="text-danger">*</span></label>
                             <input type="email" class="form-control" id="email">
                         </div>
                         <div class="mb-3" id="passwordSection">
-                            <label for="password" class="form-label">Password</label>
+                            <label for="password" class="form-label"><i class="fas fa-key"></i> Password <span class="text-danger">*</span></label>
                             <input type="password" class="form-control" id="password">
                         </div>
                         <div class="mb-3">
-                            <label for="role" class="form-label">Role</label>
+                            <label for="role" class="form-label"><i class="fas fa-user-tag"></i> Role <span class="text-danger">*</span></label>
                             <select class="form-control" id="role">
                                 <option>ADMIN</option>
                                 <option>USER</option>
                             </select>
                         </div>
-                        <!--<div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="active">
-                            <label class="form-check-label" for="active">Active</label>
-                        </div>-->
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" onclick="submitForm()">Save User</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitForm()"><i class="fas fa-save"></i> Save User</button>
                 </div>
             </div>
         </div>
@@ -121,15 +118,15 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="deactivateUserModalLabel">Deactivate User</h5>
+                    <h5 class="modal-title" id="deactivateUserModalLabel"><i class="fas fa-user-slash"></i> Deactivate User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to deactivate this user?
+                    <p class="text-warning fw-bold">Are you sure you want to deactivate this user?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-warning" onclick="confirmDeactivateUser()">Confirm Deactivate</button>
+                    <button type="button" class="btn btn-warning" onclick="confirmDeactivateUser()"><i class="fas fa-check-circle"></i> Confirm Deactivate</button>
                     <input type="hidden" id="deactivateUserId">
                 </div>
             </div>
@@ -141,21 +138,20 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="activateUserModalLabel">Activate User</h5>
+                    <h5 class="modal-title" id="activateUserModalLabel"><i class="fas fa-user-check"></i> Activate User</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    Are you sure you want to activate this user?
+                    <p class="text-success fw-bold">Are you sure you want to activate this user?</p>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" onclick="confirmActivateUser()">Confirm Activate</button>
+                    <button type="button" class="btn btn-success" onclick="confirmActivateUser()"><i class="fas fa-check-circle"></i> Confirm Activate</button>
                     <input type="hidden" id="activateUserId">
                 </div>
             </div>
         </div>
     </div>
-
 
     <div th:insert="~{fragments/general :: footer}"></div>
 
@@ -167,9 +163,19 @@
             document.getElementById('userModalLabel').innerHTML = 'New User';
             document.getElementById('userId').value = ''; // clear urlId
             document.getElementById('passwordSection').style.display = 'revert';
+
+            // Find the error message div
+            let errorMessageDiv = document.getElementById('errorMessage');
+
+            // Add the 'd-none' class to hide the div
+            errorMessageDiv.classList.add('d-none');
+
+            // Clear the text content of the div
+            errorMessageDiv.textContent = '';
         }
 
         function editUser(id, fullName, username, email, role) {
+            clearModal();
             document.getElementById('userId').value = id;
             document.getElementById('fullName').value = fullName;
             document.getElementById('username').value = username;
@@ -244,10 +250,31 @@
                 contentType: "application/json",
                 success: function (response) {
                     location.reload(); // or update the table using JavaScript
+
+                    // Find the error message div
+                    let errorMessageDiv = document.getElementById('errorMessage');
+
+                    // Add the 'd-none' class to hide the div
+                    errorMessageDiv.classList.add('d-none');
+
+                    // Clear the text content of the div
+                    errorMessageDiv.textContent = '';
                 },
                 error: function (xhr, status, error) {
-                    alert(xhr.responseJSON.message);
-                }
+                    // Find the error message div and update it
+                    let errorMessageDiv = document.getElementById('errorMessage');
+
+                    // Remove the 'd-none' class to make the div visible
+                    errorMessageDiv.classList.remove('d-none');
+
+                    // Create a combined error message
+                    let combinedErrorMessage = '';
+                    for (let i = 0; i < xhr.responseJSON.length; i++) {
+                        combinedErrorMessage += xhr.responseJSON[i].defaultMessage + '<br>';
+                    }
+
+                    // Update the inner HTML of the div
+                    errorMessageDiv.innerHTML = combinedErrorMessage;                }
             });
         }
 

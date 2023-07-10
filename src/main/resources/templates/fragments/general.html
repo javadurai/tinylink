@@ -35,31 +35,36 @@
                             <a class="nav-link" href="/"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="/my-links"><i class="fas fa-user-cog"></i> My Links</a>
+                            <a class="nav-link" href="/my-links"><i class="fas fa-link"></i> My Links</a> <!-- Updated the icon to fa-link -->
                         </li>
-                        <li th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="nav-item">
-                            <a class="nav-link" href="/all-links"><i class="fas fa-globe"></i> All Links</a>
-                        </li>
-                        <li th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="nav-item">
-                            <a class="nav-link" href="/users"><i class="fas fa-users-cog"></i> Manage Users</a>
+                        <li th:if="${#authorization.expression('hasRole(''ADMIN'')')}" class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Admin
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/all-links"><i class="fas fa-globe"></i> All Links</a></li>
+                                <li><a class="dropdown-item" href="/users"><i class="fas fa-users-cog"></i> Manage Users</a></li>
+                            </ul>
                         </li>
                     </ul>
-                    <!--
-                    <form class="d-flex me-2">
-                        <input class="form-control me-2" type="search" placeholder="Search URLs"
-                               aria-label="Search">
-                        <button class="btn btn-outline-light" type="submit"><i class="fas fa-search"></i> Search</button>
-                    </form>
-                    -->
+
                     <ul class="navbar-nav fw-bold">
                         <li class="nav-item">
                             <a class="nav-link" href="/guide"><i class="fas fa-book-open"></i> User Guide</a>
                         </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/logout"><i class="fas fa-sign-out-alt"></i> Sign Out</a>
+                        <li class="nav-item dropdown">
+                            <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <span th:text="${#authentication.principal.user.fullName}"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/profile"><i class="fas fa-user"></i> My Profile</a></li> <!-- Updated the icon to fa-user -->
+                                <li><a class="dropdown-item" href="/password"><i class="fas fa-key"></i> Change Password</a></li> <!-- Updated the icon to fa-key -->
+                                <li><a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt"></i> Sign Out</a></li>
+                            </ul>
                         </li>
                     </ul>
                 </div>
+
             </div>
         </nav>
 

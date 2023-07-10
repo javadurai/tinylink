@@ -1,8 +1,9 @@
 package com.github.jabadurai.tinylink.controllers;
 
 import com.github.jabadurai.tinylink.entities.User;
-import com.github.jabadurai.tinylink.service.UserDetailsServiceImpl;
+import com.github.jabadurai.tinylink.service.UserService;
 import com.github.jabadurai.tinylink.utils.Paginator;
+import jakarta.annotation.security.RolesAllowed;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,16 +17,17 @@ import java.util.List;
 @RequestMapping("/users")
 public class UserController extends Paginator<User> {
 
-    private final UserDetailsServiceImpl userDetailsService;
+    private final UserService userService;
 
-    public UserController(UserDetailsServiceImpl userDetailsService){
-        this.userDetailsService = userDetailsService;
+    public UserController(UserService userService){
+        this.userService = userService;
     }
 
     @GetMapping
+    @RolesAllowed("ADMIN")
     public String listUsers(Model model, @RequestParam(defaultValue = "1") int pageNo){
 
-        Page<User> page = userDetailsService.findPaginated(pageNo, PAGE_SIZE);
+        Page<User> page = userService.findPaginated(pageNo, PAGE_SIZE);
         List<User> listUsers = page.getContent();
 
         addPageDetailsToModel(model, pageNo, page, "users");

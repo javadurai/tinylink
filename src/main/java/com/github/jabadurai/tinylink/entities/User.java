@@ -1,8 +1,13 @@
 package com.github.jabadurai.tinylink.entities;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import java.io.Serializable;
 import java.util.List;
@@ -27,6 +32,7 @@ public class User implements Serializable {
     private String email;
 
     @Column(name = "password", nullable = false)
+    @ToString.Exclude
     private String password;
 
     @Column(nullable = false)
@@ -40,6 +46,7 @@ public class User implements Serializable {
     private List<UserUrlOwnership> userUrlOwnerships;
 
     @PrePersist
+    @PreUpdate
     public void prePersist() {
         // We check for null first to respect explicitly set values
         if (this.isActive == null) {
