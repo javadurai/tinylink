@@ -27,4 +27,11 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Modifying
     @Query("update User u set u.email = ?1 where u.id = ?2")
     int updateEmail(String email, Integer userid);
+
+    @Query(value = "SELECT count(1) FROM users WHERE is_active = TRUE", nativeQuery = true)
+    int numberOfActiveUsers();
+
+    @Query(value = "SELECT count(1) FROM users", nativeQuery = true)
+    int totalUsers();
+
 }

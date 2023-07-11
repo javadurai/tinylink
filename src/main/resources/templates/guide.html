@@ -1,76 +1,88 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>User Guide</title>
+    <title>TinyLink - User Guide</title>
     <div th:replace="~{fragments/general :: common-links}"></div>
 </head>
 
 <body>
-<div class="container bg-light pt-5">
-    <div th:insert="~{fragments/general :: navbar}"></div>
-    <h3 class="header m-3">User Guide</h3>
+    <div class="container bg-light pt-5">
+        <div th:insert="~{fragments/general :: navbar}"></div>
+        <h3 class="header m-3">User Guide</h3>
 
-    <div class="m-3">
-        <h5>Introduction</h5>
-        <p>
-            Welcome to our application! This User Guide provides you with all the information you need to get the most out of our app.
-            It includes details on how to use key features, as well as answers to frequently asked questions.
-        </p>
+        <div class="m-3">
+            <h5>Introduction</h5>
+            <p>
+                Welcome to our application! This User Guide provides you with all the information you need to get the
+                most out of our app.
+                It includes details on how to use key features, as well as answers to frequently asked questions.
+            </p>
 
-        <h6>Key Features</h6>
-        <ul>
-            <li><strong>Manage Users:</strong> Admins can add, edit, activate, deactivate, and delete users.</li>
-            <li><strong>Manage Links:</strong> Admins can add, edit, delete and manage ownership of links.</li>
-        </ul>
+            <h6>Key Features</h6>
+            <ul>
+                <li><strong>Manage Users:</strong> Admins can add, edit, activate, deactivate, and delete users.</li>
+                <li><strong>Manage Links:</strong> Admins can add, edit, delete and manage ownership of links.</li>
+            </ul>
 
-        <h5>Managing Users</h5>
-        <p>
-            To manage users, navigate to the 'Manage Users' page. Here you can see a table of all users, their email addresses, roles,
-            and whether they are currently active.
-        </p>
-        <p>
-            <strong>To add a new user:</strong> Click the 'Add User' button, fill in the details in the form, and click 'Save User'.
-        </p>
-        <p>
-            <strong>To edit a user:</strong> Click the 'Edit' button in the user's row, make changes in the form, and click 'Save Changes'.
-        </p>
-        <p>
-            <strong>To deactivate a user:</strong> Click the 'Deactivate User' button in the user's row.
-        </p>
-        <p>
-            <strong>To activate a user:</strong> Click the 'Activate User' button in the user's row.
-        </p>
-        <p>
-            <strong>To delete a user:</strong> Click the 'Delete' button in the user's row, then confirm your decision in the pop-up window.
-        </p>
+            <h5>Managing Users</h5>
+            <p>
+                To manage users, navigate to the 'Manage Users' page. Here you can see a table of all users, their email
+                addresses, roles,
+                and whether they are currently active.
+            </p>
+            <p>
+                <strong>To add a new user:</strong> Click the 'Add User' button, fill in the details in the form, and
+                click 'Save User'.
+            </p>
+            <p>
+                <strong>To edit a user:</strong> Click the 'Edit' button in the user's row, make changes in the form,
+                and click 'Save Changes'.
+            </p>
+            <p>
+                <strong>To deactivate a user:</strong> Click the 'Deactivate User' button in the user's row.
+            </p>
+            <p>
+                <strong>To activate a user:</strong> Click the 'Activate User' button in the user's row.
+            </p>
+            <p>
+                <strong>To delete a user:</strong> Click the 'Delete' button in the user's row, then confirm your
+                decision in the pop-up window.
+            </p>
 
-        <h5>Managing Links</h5>
-        <p>
-            Our application allows you to manage multiple links. Here's how you can make the most of this feature:
-        </p>
-        <p>
-            <strong>To add a new link:</strong> Navigate to the 'Manage Links' page and click on the 'Add Link' button.
-            Provide the necessary details in the form and click 'Save Link'.
-        </p>
-        <p>
-            <strong>To edit a link:</strong> On the 'Manage Links' page, find the link you want to edit and click the 'Edit'
-            button in the corresponding row. Make your changes in the form that appears and then click 'Save Changes'.
-        </p>
-        <p>
-            <strong>To delete a link:</strong> On the 'Manage Links' page, click the 'Delete' button in the row of the link
-            you wish to remove. Confirm your decision in the pop-up window.
-        </p>
+            <h5>Managing Links</h5>
+            <p>
+                Our application allows you to manage multiple links. Here's how you can make the most of this feature:
+            </p>
+            <p>
+                <strong>To add a new link:</strong> Navigate to the 'Manage Links' page and click on the 'Add Link'
+                button.
+                Provide the necessary details in the form and click 'Save Link'.
+            </p>
+            <p>
+                <strong>To edit a link:</strong> On the 'Manage Links' page, find the link you want to edit and click
+                the 'Edit'
+                button in the corresponding row. Make your changes in the form that appears and then click 'Save
+                Changes'.
+            </p>
+            <p>
+                <strong>To delete a link:</strong> On the 'Manage Links' page, click the 'Delete' button in the row of
+                the link
+                you wish to remove. Confirm your decision in the pop-up window.
+            </p>
 
-        <!-- Add more guides as necessary -->
+            <!-- Add more guides as necessary -->
 
-        <h5>FAQs</h5>
-        <p>
-            <strong>Q: How do I reset my password?</strong><br>
-            A: Click the 'Forgot Password' link on the login page and follow the instructions to reset your password.
-        </p>
+            <h5>FAQs</h5>
+            <p>
+                <strong>Q: How do I reset my password?</strong><br>
+                A: Click the 'Forgot Password' link on the login page and follow the instructions to reset your
+                password.
+            </p>
 
+        </div>
+        <div th:insert="~{fragments/general :: footer}"></div>
     </div>
-    <div th:insert="~{fragments/general :: footer}"></div>
-</div>
 </body>
+
 </html>

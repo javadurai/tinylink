@@ -1,270 +1,161 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>TinyLink</title>
+    <title th:text="|TinyLink - ${title}|">TinyLink</title>
     <div th:replace="~{fragments/general :: common-links}"></div>
 </head>
 
 <body>
-<div class="container bg-light pt-5">
+    <div class="container bg-light pt-5">
 
-    <div th:insert="~{fragments/general :: navbar}"></div>
+        <div th:insert="~{fragments/general :: navbar}"></div>
 
-    <div class="m-3 d-flex justify-content-between align-items-center">
-        <h3 class="header" th:text="${title}"></h3>
-        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#urlModal"
+        <div class="m-3 d-flex justify-content-between align-items-center">
+            <h3 class="header" th:text="${title}"></h3>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#urlModal"
                 onclick="clearModal()">
-            <i class="fas fa-plus"></i> Add New Link
-        </button>
+                <i class="fas fa-plus"></i> Add New Link
+            </button>
+        </div>
+
+        <div th:replace="~{fragments/general :: pagination}"></div>
+
+        <table class="table table-bordered table-striped">
+            <thead class="bg-dark-subtle">
+                <tr>
+                    <th class="text-center align-middle">#</th>
+                    <th class="text-center align-middle">Short Link</th>
+                    <th class="text-center align-middle">Original Link</th>
+                    <th class="text-center align-middle">Owners</th>
+                    <th class="text-center align-middle">Clicks</th>
+                    <th class="text-center align-middle">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="url, iterStat : ${listLinks}">
+                    <th class="text-center" th:text="${url.id}"></th>
+                    <td><a target="_blank" class="teal-text" th:text="${url.shortUrl}"
+                            th:href="@{/go/{shortUrl}(shortUrl=${url.shortUrl})}" /></td>
+                    <td th:text="${url.originalUrl}"></td>
+                    <td class="text-center" th:text="${url.owners}"></td>
+                    <td class="text-center" th:text="${url.clickCount}"></td>
+                    <td class="text-center">
+                        <a href="#" class="btn btn-success btn-sm"
+                            th:attr="onclick=|editUrl('${url.id}','${url.shortUrl}', '${url.originalUrl}')|"><i
+                                class="fas fa-edit"></i> Edit</a>
+                        <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#deleteConfirmationModal"
+                            th:attr="onclick=|deleteUrl('${url.id}','${url.shortUrl}')|"><i
+                                class="fas fa-trash-alt"></i> Delete</a>
+                        <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal"
+                            data-bs-target="#manageOwnershipModal"><i class="fas fa-cog"></i> Manage Ownership</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div th:replace="~{fragments/general :: pagination}"></div>
+
+        <div th:insert="~{fragments/general :: footer}"></div>
     </div>
 
-    <div th:replace="~{fragments/general :: pagination}"></div>
+    <!-- Modal -->
+    <!-- New URL Modal -->
+    <div class="modal fade" id="urlModal" tabindex="-1" aria-labelledby="urlModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="urlModalLabel"><i class="fas fa-link"></i> New URL</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
+                    <form id="urlForm">
+                        <input type="hidden" id="urlId">
+                        <div class="mb-3">
+                            <label for="shortUrl" class="form-label">Short URL <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="shortUrl" placeholder="Enter short URL"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="originalUrl" class="form-label">Original URL <span
+                                    class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="originalUrl" placeholder="Enter original URL"
+                                required>
+                        </div>
 
-    <table class="table table-bordered table-striped">
-        <thead class="bg-dark-subtle">
-        <tr>
-            <th class="text-center align-middle">#</th>
-            <th class="text-center align-middle">Short Link</th>
-            <th class="text-center align-middle">Original Link</th>
-            <th class="text-center align-middle">Owners</th>
-            <th class="text-center align-middle">Clicks</th>
-            <th class="text-center align-middle">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="url, iterStat : ${listLinks}">
-            <th class="text-center" th:text="${url.id}"></th>
-            <td><a target="_blank" class="teal-text" th:text="${url.shortUrl}" th:href="@{/go/{shortUrl}(shortUrl=${url.shortUrl})}"/></td>
-            <td th:text="${url.originalUrl}"></td>
-            <td class="text-center" th:text="${url.owners}"></td>
-            <td class="text-center" th:text="${url.clickCount}"></td>
-            <td class="text-center">
-                <a href="#" class="btn btn-success btn-sm"
-                   th:attr="onclick=|editUrl('${url.id}','${url.shortUrl}', '${url.originalUrl}')|"><i
-                        class="fas fa-edit"></i> Edit</a>
-                <a href="#" class="btn btn-danger btn-sm" data-bs-toggle="modal"
-                   data-bs-target="#deleteConfirmationModal" th:attr="onclick=|deleteUrl('${url.id}','${url.shortUrl}')|"><i class="fas fa-trash-alt"></i> Delete</a>
-                <a href="#" class="btn btn-info btn-sm" data-bs-toggle="modal"
-                   data-bs-target="#manageOwnershipModal"><i class="fas fa-cog"></i> Manage Ownership</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-
-    <div th:replace="~{fragments/general :: pagination}"></div>
-
-    <div th:insert="~{fragments/general :: footer}"></div>
-</div>
-
-<!-- Modal -->
-<!-- New URL Modal -->
-<div class="modal fade" id="urlModal" tabindex="-1" aria-labelledby="urlModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="urlModalLabel"><i class="fas fa-link"></i> New URL</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
-                <form id="urlForm">
-                    <input type="hidden" id="urlId">
-                    <div class="mb-3">
-                        <label for="shortUrl" class="form-label">Short URL <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="shortUrl" placeholder="Enter short URL" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="originalUrl" class="form-label">Original URL <span class="text-danger">*</span></label>
-                        <input type="text" class="form-control" id="originalUrl" placeholder="Enter original URL" required>
-                    </div>
-
-                    <div id="errorContainer" style="padding:10px;"></div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                <button type="button" class="btn btn-primary" onclick="submitForm()"><i class="fas fa-save"></i> Save</button>
+                        <div id="errorContainer" style="padding:10px;"></div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i
+                            class="fas fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-primary" onclick="submitForm()"><i class="fas fa-save"></i>
+                        Save</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- Manage Ownership Modal -->
-<div class="modal fade" id="manageOwnershipModal" tabindex="-1" aria-labelledby="manageOwnershipModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="manageOwnershipModalLabel"><i class="fas fa-users-cog"></i> Manage Ownership</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p>Select owners for the URL:</p>
-                <form id="ownershipForm">
-                    <select class="owner-selection" name="owners[]" multiple="multiple" style="width: 100%;">
-                        <option value="1">Owner 1</option>
-                        <option value="2">Owner 2</option>
-                        <option value="3">Owner 3</option>
-                        <!-- Add more owners here -->
-                    </select>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                <button type="button" class="btn btn-primary" onclick="saveOwnershipChanges()"><i class="fas fa-save"></i> Save Changes</button>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="deleteConfirmationModalLabel"><i class="fas fa-trash-alt"></i> Delete URL</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <p class="text-danger"><i class="fas fa-exclamation-triangle"></i> Are you sure you want to delete this URL?</p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Cancel</button>
-                <button type="button" class="btn btn-danger" onclick="confirmDeleteLink()"><i class="fas fa-trash-alt"></i> Delete</button>
-                <input type="hidden" id="deleteUrlId">
+    <!-- Manage Ownership Modal -->
+    <div class="modal fade" id="manageOwnershipModal" tabindex="-1" aria-labelledby="manageOwnershipModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="manageOwnershipModalLabel"><i class="fas fa-users-cog"></i> Manage
+                        Ownership</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Select owners for the URL:</p>
+                    <form id="ownershipForm">
+                        <select class="owner-selection" name="owners[]" multiple="multiple" style="width: 100%;">
+                            <option value="1">Owner 1</option>
+                            <option value="2">Owner 2</option>
+                            <option value="3">Owner 3</option>
+                            <!-- Add more owners here -->
+                        </select>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i
+                            class="fas fa-times"></i> Close</button>
+                    <button type="button" class="btn btn-primary" onclick="saveOwnershipChanges()"><i
+                            class="fas fa-save"></i> Save Changes</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script>
+    <!-- Delete Confirmation Modal -->
+    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" aria-labelledby="deleteConfirmationModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="deleteConfirmationModalLabel"><i class="fas fa-trash-alt"></i> Delete
+                        URL</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="text-danger"><i class="fas fa-exclamation-triangle"></i> Are you sure you want to delete
+                        this URL?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal"><i
+                            class="fas fa-times"></i> Cancel</button>
+                    <button type="button" class="btn btn-danger" onclick="confirmDeleteLink()"><i
+                            class="fas fa-trash-alt"></i> Delete</button>
+                    <input type="hidden" id="deleteUrlId">
+                </div>
+            </div>
+        </div>
+    </div>
 
-
-        function clearModal() {
-            document.getElementById('urlForm').reset();
-            document.getElementById('urlModalLabel').innerHTML = 'New URL';
-            document.getElementById('urlId').value = ''; // clear urlId
-
-            // Find the error message div
-            let errorMessageDiv = document.getElementById('errorMessage');
-
-            // Add the 'd-none' class to hide the div
-            errorMessageDiv.classList.add('d-none');
-
-            // Clear the text content of the div
-            errorMessageDiv.textContent = '';
-        }
-
-        function editUrl(id, shortUrl, originalUrl) {
-            clearModal();
-            document.getElementById('urlId').value = id;
-            document.getElementById('shortUrl').value = shortUrl;
-            document.getElementById('originalUrl').value = originalUrl;
-            document.getElementById('urlModalLabel').innerHTML = 'Edit URL';
-            var myModal = new bootstrap.Modal(document.getElementById('urlModal'));
-            myModal.show();
-        }
-
-        function deleteUrl(id) {
-            document.getElementById('deleteUrlId').value = id;
-            var myModal = new bootstrap.Modal(document.getElementById('deleteConfirmationModal'));
-            myModal.show();
-        }
-
-        function confirmDeleteLink() {
-            const urlId = document.getElementById('deleteUrlId').value;
-
-            $.ajax({
-                type: "DELETE",
-                url: "/api/urls/" + urlId,
-                success: function (response) {
-                    location.reload(); // or update the table using JavaScript
-
-                    // Find the error message div
-                    let errorMessageDiv = document.getElementById('errorMessage');
-
-                    // Add the 'd-none' class to hide the div
-                    errorMessageDiv.classList.add('d-none');
-
-                    // Clear the text content of the div
-                    errorMessageDiv.textContent = '';
-                },
-                error: function (xhr, status, error) {
-                    // Find the error message div and update it
-                    let errorMessageDiv = document.getElementById('errorMessage');
-
-                    // Remove the 'd-none' class to make the div visible
-                    errorMessageDiv.classList.remove('d-none');
-
-                    // Create a combined error message
-                    let combinedErrorMessage = '';
-                    for (let i = 0; i < xhr.responseJSON.length; i++) {
-                        combinedErrorMessage += xhr.responseJSON[i].defaultMessage + '<br>';
-                    }
-
-                    // Update the inner HTML of the div
-                    errorMessageDiv.innerHTML = combinedErrorMessage;
-                }
-            });
-        }
-
-        function submitForm() {
-            const urlId = document.getElementById('urlId').value;
-            const shortUrl = document.getElementById('shortUrl').value;
-            const originalUrl = document.getElementById('originalUrl').value;
-
-            console.log(urlId);
-
-            const data = { id: urlId, shortUrl, originalUrl };
-
-            console.log(JSON.stringify(data));
-
-            $.ajax({
-                type: "POST",
-                url: "/api/urls",
-                data: JSON.stringify(data),
-                contentType: "application/json",
-                success: function (response) {
-                    location.reload(); // or update the table using JavaScript
-
-                    // Find the error message div
-                    let errorMessageDiv = document.getElementById('errorMessage');
-
-                    // Add the 'd-none' class to hide the div
-                    errorMessageDiv.classList.add('d-none');
-
-                    // Clear the text content of the div
-                    errorMessageDiv.textContent = '';
-                },
-                error: function (xhr, status, error) {
-                    // Find the error message div and update it
-                    let errorMessageDiv = document.getElementById('errorMessage');
-
-                    // Remove the 'd-none' class to make the div visible
-                    errorMessageDiv.classList.remove('d-none');
-
-                    // Create a combined error message
-                    let combinedErrorMessage = '';
-                    for (let i = 0; i < xhr.responseJSON.length; i++) {
-                        combinedErrorMessage += xhr.responseJSON[i].defaultMessage + '<br>';
-                    }
-
-                    // Update the inner HTML of the div
-                    errorMessageDiv.innerHTML = combinedErrorMessage;
-                }
-            });
-        }
-
-        function saveOwnershipChanges() {
-            // Logic to save the changes in ownership
-            // This could involve sending the data to the server
-            alert('Ownership changes saved'); // This is just a placeholder
-        }
-
-        $(document).ready(function () {
-            $('.owner-selection').select2();
-        });
-
-    </script>
+    <script src="/js/manage-links.js"></script>
 
 </body>
 

@@ -5,7 +5,6 @@ import com.github.jabadurai.tinylink.repositories.UrlRepository;
 import com.github.jabadurai.tinylink.service.UrlService;
 import com.github.jabadurai.tinylink.utils.Paginator;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
@@ -30,13 +28,6 @@ public class UrlController extends Paginator<Url> {
     UrlController(UrlRepository urlRepository, UrlService urlService){
         this.urlRepository = urlRepository;
         this.urlService = urlService;
-    }
-
-    @RequestMapping("/")
-    @Transactional
-    public String dashboard(Model model){
-
-        return "dashboard";
     }
 
     @GetMapping("/my-links")

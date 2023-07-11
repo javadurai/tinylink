@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.validation.ObjectError;
+import org.springframework.validation.ValidationUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -85,10 +86,6 @@ public class UrlService  extends BaseService {
 
     public ResponseEntity<Object> saveLink(Url urlDto, BindingResult bindingResult) {
 
-        ResponseEntity<Object> errors = checkIfAnyErrorsInObject(urlDto.getId(), bindingResult, updatableFields);
-
-        if (errors != null) return errors;
-
         try {
 
             if(urlDto.getId() != null){
@@ -102,11 +99,18 @@ public class UrlService  extends BaseService {
                 }
             }
 
-            urlRepository.save(urlDto);
-            // Return a successful response
-            Map<String, String> response = new HashMap<>();
-            response.put("message", "Link saved successfully!");
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            ValidationUtils.rejectIfEmptyOrWhitespace(bindingResult, "shortUrl", "NotEmpty.urlForm.shortUrl",null, "Short Url is mandatory");
+            ValidationUtils.rejectIfEmptyOrWhitespace(bindingResult, "originalUrl", "NotEmpty.urlForm.originalUrl",null, "Original Url is mandatory");
+
+            if(bindingResult.hasErrors()){
+                return new ResponseEntity<>(bindingResult.getAllErrors(), HttpStatus.BAD_REQUEST);
+            } else {
+                urlRepository.save(urlDto);
+                // Return a successful response
+                Map<String, String> response = new HashMap<>();
+                response.put("message", "Link saved successfully!");
+                return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            }
         } catch (DataIntegrityViolationException ex) {
             // This exception is thrown when unique constraint is violated
             bindingResult.addError(new ObjectError("shortUrl","Short link with same name already exists, Please choose a different one"));

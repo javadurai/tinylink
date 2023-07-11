@@ -1,284 +1,171 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>Manage Users</title>
+    <title>TinyLink - Manage Users</title>
     <div th:replace="~{fragments/general :: common-links}"></div>
 </head>
 
 <body>
-<div class="container bg-light pt-5">
-    <div th:insert="~{fragments/general :: navbar}"></div>
+    <div class="container bg-light pt-5">
+        <div th:insert="~{fragments/general :: navbar}"></div>
 
-    <div class="m-3 d-flex justify-content-between align-items-center">
-        <h3 class="header">Manage Users</h3>
-        <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#userModal"
+        <div class="m-3 d-flex justify-content-between align-items-center">
+            <h3 class="header">Manage Users</h3>
+            <button type="button" class="btn btn-secondary" data-bs-toggle="modal" data-bs-target="#userModal"
                 onclick="clearModal()">
-            <i class="fas fa-plus"></i> Add User
-        </button>
-    </div>
+                <i class="fas fa-plus"></i> Add User
+            </button>
+        </div>
 
-    <div th:replace="~{fragments/general :: pagination}"></div>
+        <div th:replace="~{fragments/general :: pagination}"></div>
 
-    <table class="table table-bordered table-striped">
-        <thead class="bg-dark-subtle">
-        <tr>
-            <th class="text-center">#</th>
-            <th>Full Name</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th class="text-center">Role</th>
-            <th class="text-center">Active</th>
-            <th class="text-center">Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="user, iterStat : ${listUsers}">
-            <th class="text-center" th:text="${user.id}"></th>
-            <td th:text="${user.fullName}"></td>
-            <td th:text="${user.username}"></td>
-            <td th:text="${user.email}"></td>
-            <td class="text-center" th:text="${user.role}"></td>
-            <td class="text-center">
-                <span th:if="${user.isActive}" class="badge bg-success"> Yes </span>
-                <span th:if="${!user.isActive}" class="badge bg-danger"> No </span>
-            </td>
-            <td class="text-center">
-                <a href="#" class="btn btn-success btn-sm"
-                   th:attr="onclick=|editUser('${user.id}','${user.fullName}','${user.username}', '${user.email}', '${user.role}')|"><i class="fas fa-edit"></i> Edit</a>
-                <span th:if="${#authentication.name} != ${user.username}">
-                    <a th:if="${user.isActive}" href="#" class="btn btn-warning btn-sm" th:attr="onclick=|deactivateUser('${user.id}')|"><i class="fas fa-user-times"></i> Deactivate User</a>
-                    <a th:if="${!user.isActive}" href="#" class="btn btn-success btn-sm" th:attr="onclick=|activateUser('${user.id}')|"><i class="fas fa-user-check"></i> Activate User</a>
-                </span>
-            </td>
-        </tr>
-        <!-- More users can go here -->
-        </tbody>
-    </table>
+        <table class="table table-bordered table-striped">
+            <thead class="bg-dark-subtle">
+                <tr>
+                    <th class="text-center">#</th>
+                    <th>Full Name</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th class="text-center">Role</th>
+                    <th class="text-center">Active</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="user, iterStat : ${listUsers}">
+                    <th class="text-center" th:text="${user.id}"></th>
+                    <td th:text="${user.fullName}"></td>
+                    <td th:text="${user.username}"></td>
+                    <td th:text="${user.email}"></td>
+                    <td class="text-center" th:text="${user.role}"></td>
+                    <td class="text-center">
+                        <span th:if="${user.isActive}" class="badge bg-success"> Yes </span>
+                        <span th:if="${!user.isActive}" class="badge bg-danger"> No </span>
+                    </td>
+                    <td class="text-center">
+                        <a href="#" class="btn btn-success btn-sm"
+                            th:attr="onclick=|editUser('${user.id}','${user.fullName}','${user.username}', '${user.email}', '${user.role}')|"><i
+                                class="fas fa-edit"></i> Edit</a>
+                        <span th:if="${#authentication.name} != ${user.username}">
+                            <a th:if="${user.isActive}" href="#" class="btn btn-warning btn-sm"
+                                th:attr="onclick=|deactivateUser('${user.id}')|"><i class="fas fa-user-times"></i>
+                                Deactivate User</a>
+                            <a th:if="${!user.isActive}" href="#" class="btn btn-success btn-sm"
+                                th:attr="onclick=|activateUser('${user.id}')|"><i class="fas fa-user-check"></i>
+                                Activate User</a>
+                        </span>
+                    </td>
+                </tr>
+                <!-- More users can go here -->
+            </tbody>
+        </table>
 
-    <div th:replace="~{fragments/general :: pagination}"></div>
+        <div th:replace="~{fragments/general :: pagination}"></div>
 
-    <!-- Add User Modal -->
-    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="userModalLabel"><i class="fas fa-user-plus"></i> Add User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body"><!-- The error message will be inserted here -->
-                    <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
-                    <form id="userForm">
-                        <input type="hidden" id="userId">
-                        <div class="mb-3">
-                            <label for="fullName" class="form-label"><i class="fas fa-user"></i> Full Name <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="fullName">
-                        </div>
-                        <div class="mb-3">
-                            <label for="username" class="form-label"><i class="fas fa-user-circle"></i> Username <span class="text-danger">*</span></label>
-                            <input type="text" class="form-control" id="username">
-                        </div>
-                        <div class="mb-3">
-                            <label for="email" class="form-label"><i class="fas fa-envelope"></i> Email <span class="text-danger">*</span></label>
-                            <input type="email" class="form-control" id="email">
-                        </div>
-                        <div class="mb-3" id="passwordSection">
-                            <label for="password" class="form-label"><i class="fas fa-key"></i> Password <span class="text-danger">*</span></label>
-                            <input type="password" class="form-control" id="password">
-                        </div>
-                        <div class="mb-3">
-                            <label for="role" class="form-label"><i class="fas fa-user-tag"></i> Role <span class="text-danger">*</span></label>
-                            <select class="form-control" id="role">
-                                <option>ADMIN</option>
-                                <option>USER</option>
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fas fa-times"></i> Close</button>
-                    <button type="button" class="btn btn-primary" onclick="submitForm()"><i class="fas fa-save"></i> Save User</button>
+        <!-- Add User Modal -->
+        <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="addUserModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="userModalLabel"><i class="fas fa-user-plus"></i> Add User</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body"><!-- The error message will be inserted here -->
+                        <div id="errorMessage" class="alert alert-danger d-none" role="alert"></div>
+                        <form id="userForm">
+                            <input type="hidden" id="userId">
+                            <div class="mb-3">
+                                <label for="fullName" class="form-label"><i class="fas fa-user"></i> Full Name <span
+                                        class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="fullName">
+                            </div>
+                            <div class="mb-3">
+                                <label for="username" class="form-label"><i class="fas fa-user-circle"></i> Username
+                                    <span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" id="username">
+                            </div>
+                            <div class="mb-3">
+                                <label for="email" class="form-label"><i class="fas fa-envelope"></i> Email <span
+                                        class="text-danger">*</span></label>
+                                <input type="email" class="form-control" id="email">
+                            </div>
+                            <div class="mb-3" id="passwordSection">
+                                <label for="password" class="form-label"><i class="fas fa-key"></i> Password <span
+                                        class="text-danger">*</span></label>
+                                <input type="password" class="form-control" id="password">
+                            </div>
+                            <div class="mb-3">
+                                <label for="role" class="form-label"><i class="fas fa-user-tag"></i> Role <span
+                                        class="text-danger">*</span></label>
+                                <select class="form-control" id="role">
+                                    <option>ADMIN</option>
+                                    <option>USER</option>
+                                </select>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i
+                                class="fas fa-times"></i> Close</button>
+                        <button type="button" class="btn btn-primary" onclick="submitForm()"><i class="fas fa-save"></i>
+                            Save User</button>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <!-- Deactivate User Modal -->
-    <div class="modal fade" id="deactivateUserModal" tabindex="-1" aria-labelledby="deactivateUserModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deactivateUserModalLabel"><i class="fas fa-user-slash"></i> Deactivate User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="text-warning fw-bold">Are you sure you want to deactivate this user?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-warning" onclick="confirmDeactivateUser()"><i class="fas fa-check-circle"></i> Confirm Deactivate</button>
-                    <input type="hidden" id="deactivateUserId">
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Activate User Modal -->
-    <div class="modal fade" id="activateUserModal" tabindex="-1" aria-labelledby="activateUserModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="activateUserModalLabel"><i class="fas fa-user-check"></i> Activate User</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p class="text-success fw-bold">Are you sure you want to activate this user?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-success" onclick="confirmActivateUser()"><i class="fas fa-check-circle"></i> Confirm Activate</button>
-                    <input type="hidden" id="activateUserId">
+        <!-- Deactivate User Modal -->
+        <div class="modal fade" id="deactivateUserModal" tabindex="-1" aria-labelledby="deactivateUserModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="deactivateUserModalLabel"><i class="fas fa-user-slash"></i>
+                            Deactivate User</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-warning fw-bold">Are you sure you want to deactivate this user?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-warning" onclick="confirmDeactivateUser()"><i
+                                class="fas fa-check-circle"></i> Confirm Deactivate</button>
+                        <input type="hidden" id="deactivateUserId">
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- Activate User Modal -->
+        <div class="modal fade" id="activateUserModal" tabindex="-1" aria-labelledby="activateUserModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="activateUserModalLabel"><i class="fas fa-user-check"></i> Activate
+                            User</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="text-success fw-bold">Are you sure you want to activate this user?</p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success" onclick="confirmActivateUser()"><i
+                                class="fas fa-check-circle"></i> Confirm Activate</button>
+                        <input type="hidden" id="activateUserId">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div th:insert="~{fragments/general :: footer}"></div>
+
+        <script type="" src="/js/manage-users.js"></script>
+
     </div>
-
-    <div th:insert="~{fragments/general :: footer}"></div>
-
-    <script>
-
-
-        function clearModal() {
-            document.getElementById('userForm').reset();
-            document.getElementById('userModalLabel').innerHTML = 'New User';
-            document.getElementById('userId').value = ''; // clear urlId
-            document.getElementById('passwordSection').style.display = 'revert';
-
-            // Find the error message div
-            let errorMessageDiv = document.getElementById('errorMessage');
-
-            // Add the 'd-none' class to hide the div
-            errorMessageDiv.classList.add('d-none');
-
-            // Clear the text content of the div
-            errorMessageDiv.textContent = '';
-        }
-
-        function editUser(id, fullName, username, email, role) {
-            clearModal();
-            document.getElementById('userId').value = id;
-            document.getElementById('fullName').value = fullName;
-            document.getElementById('username').value = username;
-            document.getElementById('email').value = email;
-            document.getElementById('role').value = role;
-            document.getElementById('passwordSection').style.display = 'none';
-            document.getElementById('userModalLabel').innerHTML = 'Edit User';
-            var myModal = new bootstrap.Modal(document.getElementById('userModal'));
-            myModal.show();
-        }
-
-        function deactivateUser(id) {
-            document.getElementById('deactivateUserId').value = id;
-            var myModal = new bootstrap.Modal(document.getElementById('deactivateUserModal'));
-            myModal.show();
-        }
-
-        function activateUser(id) {
-            document.getElementById('activateUserId').value = id;
-            var myModal = new bootstrap.Modal(document.getElementById('activateUserModal'));
-            myModal.show();
-        }
-
-        function confirmActivateUser() {
-            const urlId = document.getElementById('activateUserId').value;
-
-            $.ajax({
-                type: "POST",
-                url: "/api/users/activate/" + urlId,
-                success: function (response) {
-                    location.reload();
-                },
-                error: function (xhr, status, error) {
-                    alert(xhr.responseJSON.message);
-                }
-            });
-        }
-
-        function confirmDeactivateUser() {
-            const urlId = document.getElementById('deactivateUserId').value;
-
-            $.ajax({
-                type: "POST",
-                url: "/api/users/deactivate/" + urlId,
-                success: function (response) {
-                    location.reload();
-                },
-                error: function (xhr, status, error) {
-                    alert(xhr.responseJSON.message);
-                }
-            });
-        }
-
-        function submitForm() {
-            const userId = document.getElementById('userId').value;
-            const username = document.getElementById('username').value;
-            const fullName = document.getElementById('fullName').value;
-            const email = document.getElementById('email').value;
-            const role = document.getElementById('role').value;
-            const password = document.getElementById('password').value;
-
-            const data = { id: userId, fullName, username, email, role};
-
-            if (userId == ""){
-                data.password = password;
-            }
-
-            $.ajax({
-                type: "POST",
-                url: "/api/users",
-                data: JSON.stringify(data),
-                contentType: "application/json",
-                success: function (response) {
-                    location.reload(); // or update the table using JavaScript
-
-                    // Find the error message div
-                    let errorMessageDiv = document.getElementById('errorMessage');
-
-                    // Add the 'd-none' class to hide the div
-                    errorMessageDiv.classList.add('d-none');
-
-                    // Clear the text content of the div
-                    errorMessageDiv.textContent = '';
-                },
-                error: function (xhr, status, error) {
-                    // Find the error message div and update it
-                    let errorMessageDiv = document.getElementById('errorMessage');
-
-                    // Remove the 'd-none' class to make the div visible
-                    errorMessageDiv.classList.remove('d-none');
-
-                    // Create a combined error message
-                    let combinedErrorMessage = '';
-                    for (let i = 0; i < xhr.responseJSON.length; i++) {
-                        combinedErrorMessage += xhr.responseJSON[i].defaultMessage + '<br>';
-                    }
-
-                    // Update the inner HTML of the div
-                    errorMessageDiv.innerHTML = combinedErrorMessage;                }
-            });
-        }
-
-        function saveOwnershipChanges() {
-            // Logic to save the changes in ownership
-            // This could involve sending the data to the server
-            alert('Ownership changes saved'); // This is just a placeholder
-        }
-
-        $(document).ready(function () {
-            $('.owner-selection').select2();
-        });
-
-    </script>
-
-</div>
 </body>
+
 </html>

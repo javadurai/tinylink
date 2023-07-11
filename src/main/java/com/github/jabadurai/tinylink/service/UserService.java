@@ -59,7 +59,7 @@ public class UserService {
     }
 
     @Transactional
-    public ResponseEntity<Object> saveUserNew(User user, BindingResult bindingResult){
+    public ResponseEntity<Object> saveUser(User user, BindingResult bindingResult){
 
         try {
 
