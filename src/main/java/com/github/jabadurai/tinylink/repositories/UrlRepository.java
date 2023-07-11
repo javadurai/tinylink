@@ -15,4 +15,10 @@ public interface UrlRepository extends JpaRepository<Url, Integer> {
 
     @Query(value = "SELECT * FROM urls WHERE id IN (SELECT DISTINCT url_id FROM user_url_ownership WHERE user_id = :userId)", nativeQuery = true)
     Page<Url> findByOwnedByUser(Integer userId, Pageable pageable);
+
+    @Query(value = "SELECT count(1) FROM urls", nativeQuery = true)
+    int totalLinks();
+
+    @Query(value = "SELECT sum(click_count) FROM urls", nativeQuery = true)
+    int totalClicksOfLinks();
 }

@@ -4,7 +4,6 @@ import com.github.jabadurai.tinylink.entities.User;
 import com.github.jabadurai.tinylink.service.UserService;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.transaction.Transactional;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
@@ -24,7 +23,7 @@ public class UserRestController {
     @PostMapping
     @RolesAllowed("ADMIN")
     public ResponseEntity<Object> saveUser(@RequestBody User user, BindingResult bindingResult) {
-        return userService.saveUserNew(user, bindingResult);
+        return userService.saveUser(user, bindingResult);
     }
 
     @DeleteMapping("/{id}")

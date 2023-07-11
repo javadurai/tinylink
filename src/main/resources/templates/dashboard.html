@@ -1,71 +1,84 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>TinyLink</title>
+    <title>TinyLink - Dashboard</title>
     <div th:replace="~{fragments/general :: common-links}"></div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
-<div class="container bg-light pt-5">
-    <div th:insert="~{fragments/general :: navbar}"></div>
-    <h3 class="header m-3">Dashboard</h3>
+    <div class="container bg-light pt-5">
+        <div th:insert="~{fragments/general :: navbar}"></div>
+        <h3 class="header m-3">Dashboard</h3>
 
-    <div class="row ml-5 mr-5 text-center">
-        <div class="col-md-4">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-header"><i class="fas fa-users"></i> Total Users</div>
-                <div class="card-body fw-bold">
-                    <h5 class="card-title">123</h5>
+        <div class="row ml-5 mr-5 ">
+            <div class="col-md-3 text-center">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-header"><i class="fas fa-users"></i> Total Users</div>
+                    <div class="card-body fw-bold">
+                        <h5 class="card-title" th:text="${totalUsers}">123</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-header"><i class="fas fa-user-check"></i> Active Users</div>
+                    <div class="card-body fw-bold">
+                        <h5 class="card-title" th:text="${numberOfActiveUsers}">112</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="card text-white bg-secondary mb-3">
+                    <div class="card-header"><i class="fas fa-link"></i> Total Links</div>
+                    <div class="card-body fw-bold">
+                        <h5 class="card-title" th:text="${totalLinks}">345</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 text-center">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-header"><i class="fas fa-chart-line"></i> Our Links Served (Times)</div>
+                    <div class="card-body fw-bold">
+                        <h5 class="card-title" th:text="${totalClicksOfLinks}">345</h5>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 text-center">
-            <div class="card text-white bg-success mb-3">
-                <div class="card-header"><i class="fas fa-user-check"></i> Active Users</div>
-                <div class="card-body fw-bold">
-                    <h5 class="card-title">112</h5>
+
+
+
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header">App Usage Trends</div>
+                    <div class="card-body">
+                        <canvas id="myChart"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-md-4 text-center">
-            <div class="card text-white bg-info mb-3">
-                <div class="card-header"><i class="fas fa-link"></i> Total Links</div>
-                <div class="card-body fw-bold">
-                    <h5 class="card-title">345</h5>
-                </div>
-            </div>
-        </div>
+
+        <div th:insert="~{fragments/general :: footer}"></div>
     </div>
-    <div class="row mt-5">
-        <div class="col-md-12">
-            <div class="card">
-                <div class="card-header">User Registration Trends</div>
-                <div class="card-body">
-                    <canvas id="myChart"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
 
-    <div th:insert="~{fragments/general :: footer}"></div>
-</div>
-
-<!--<script>
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var chart = new Chart(ctx, {
-        type: 'line',
-        data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-            datasets: [{
-                label: 'User Registration Trends',
-                backgroundColor: 'rgb(255, 99, 132)',
-                borderColor: 'rgb(255, 99, 132)',
-                data: [0, 10, 5, 2, 20, 30, 45]
-            }]
-        },
-        options: {}
-    });
-</script>-->
+    <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        var chart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
+                datasets: [{
+                    label: 'App Usage Trends',
+                    backgroundColor: 'rgb(255, 99, 132)',
+                    borderColor: 'rgb(255, 99, 132)',
+                    data: [48, 150, 247, 198, 121, 268, 298]
+                }]
+            },
+            options: {}
+        });
+    </script>
 
 </body>
 
